@@ -13,6 +13,7 @@
     "prepublish": "rm -rf dist && npm run build",
     "postpublish": "git push && git push --tags"
   },
+  "keywords": ["openapi", "schema", "json schema", "typescript", "generator", "generate", "validator", "validate", "json"],
   "author": "Q42",
   "license": "MIT",
   "repository": {
