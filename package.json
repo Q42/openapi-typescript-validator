@@ -1,19 +1,23 @@
 {
   "name": "openapi-typescript-generator",
   "version": "0.1.0",
-  "description": "",
+  "description": "Generate typescript with ajv validation based on openapi schemas",
   "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "files": [
     "dist/**/*"
   ],
   "scripts": {
     "build": "tsc",
     "build:watch": "tsc --build --watch",
-    "prepublish": "rm -rf dist && npm run build",
-    "publish": "npm publish"
+    "prepublish": "rm -rf dist && npm run build"
   },
   "author": "Q42",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Q42/openapi-typescript-generator.git"
+  },
   "homepage": "https://github.com/Q42/openapi-typescript-generator",
   "dependencies": {
     "@openapi-contrib/openapi-schema-to-json-schema": "^3.0.4",
