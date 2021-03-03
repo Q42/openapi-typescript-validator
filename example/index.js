@@ -15,6 +15,13 @@ async function main() {
     name: 'complex',
     directory: path.join(__dirname, '/generated')
   })
+
+  await generate({
+    schemaFile: path.join(__dirname, 'schemas/custom-schema.js'),
+    schemaType: 'custom',
+    name: 'custom',
+    directory: path.join(__dirname, '/generated')
+  })
 }
 
 main()

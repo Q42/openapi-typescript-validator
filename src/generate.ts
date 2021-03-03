@@ -1,51 +1,28 @@
 import * as path from 'path';
 import { compile } from 'json-schema-to-typescript'
 import { decoderTemplate, decodersTemplate, modelsTemplate } from './templates';
-import { mkdirSync, writeFileSync, readFileSync } from 'fs';
-import jsYaml from 'js-yaml'
+import { mkdirSync, writeFileSync } from 'fs';
 import { format, Options } from 'prettier';
-const toJsonSchema = require('@openapi-contrib/openapi-schema-to-json-schema');
+import { parseSchema, SchemaType } from './parse-schema';
 
 export interface GenerateOptions {
   schemaFile: string;
-  schemaType: 'yaml' | 'json';
+  schemaType: SchemaType;
   name: string;
-  directory: string;
-  prettierOptions?: Options
+  directory: string | string[];
+  prettierOptions?: Options;
 }
 
 export async function generate(options: GenerateOptions) {
-  const { directory, name, schemaFile, schemaType } = options;
-
+  const { name, schemaFile, schemaType } = options;
   const prettierOptions = options.prettierOptions ?? { parser: 'typescript' };
+  const directories: string[] = typeof options.directory === 'string' ? [options.directory] : options.directory;
 
-  let schema: any;
+  console.info(`Start generating files for ${schemaType} schema: ${schemaFile}`)
 
-  if (schemaType === 'yaml') {
-    schema = jsYaml.load(readFileSync(schemaFile, 'utf8'));
-  } else {
-    schema = JSON.parse(readFileSync(schemaFile, 'utf8'));
-  }
+  const schema = parseSchema(schemaFile, schemaType);
 
-  const properties: Record<string, any> = {};
-  const definitions: Record<string, any> = {}
-
-  Object.entries(schema.components.schemas).forEach(([key, value]) => {
-    properties[key] = { $ref: `#/definitions/${key}` };
-    definitions[key] = toJsonSchema(value);
-  });
-
-  // open api is a bit different so we need to creata a different schema
-  const schemaJsonOutput = JSON
-    .stringify({
-      type: 'object',
-      title: 'Schema',
-      definitions,
-      properties,
-    }, undefined, 2)
-    .replace(/\#\/components\/schemas/g, '#/definitions')
-
-  const compiledSchema = await compile(JSON.parse(schemaJsonOutput), 'Schema');
+  const compiledSchema = await compile(JSON.parse(schema.json), 'Schema');
 
   const rawTypescriptModels = modelsTemplate
     .replace(/\$Models/g, compiledSchema)
@@ -54,9 +31,10 @@ export async function generate(options: GenerateOptions) {
 
   const typescriptModels = format(rawTypescriptModels, prettierOptions);
 
-  const decoders = Object.entries(definitions)
+  const decoders = Object.entries(schema.definitions)
     .filter(([name, definition]) => definition.type === 'object')
     .map(([definitionName]) => decoderTemplate
+      .replace(/\$DecoderName/g, `${definitionName}Decoder` )
       .replace(/\$Class/g, definitionName)
       .trim()
     )
@@ -68,8 +46,13 @@ export async function generate(options: GenerateOptions) {
 
   const decoderOutput = format(rawDecoderOutput, prettierOptions);
 
-  mkdirSync(directory, { recursive: true });
-  writeFileSync(path.join(directory, `${name}-models.ts`), typescriptModels);
-  writeFileSync(path.join(directory, `${name}-decoders.ts`), decoderOutput);
-  writeFileSync(path.join(directory, `${name}-schema.json`), schemaJsonOutput);
+  directories.forEach(directory => {
+    mkdirSync(directory, { recursive: true });
+
+    writeFileSync(path.join(directory, `${name}-models.ts`), typescriptModels);
+    writeFileSync(path.join(directory, `${name}-decoders.ts`), decoderOutput);
+    writeFileSync(path.join(directory, `${name}-schema.json`), schema.json);
+  })
+
+  console.info(`Successfully generated files for ${schemaFile}`);
 }

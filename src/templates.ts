@@ -12,7 +12,7 @@ import * as types from './$SchemaName-models'
 const ajv = new Ajv();
 ajv.addSchema(schema);
 
-function validateJson(json: any, schemaRef: string, className: string): any {
+function validateJson(json: any, schemaRef: string): any {
   const schema = ajv.getSchema(schemaRef);
   if (!schema) {
     throw new Error(\`Schema \${schemaRef} not found\`);
@@ -26,10 +26,10 @@ function validateJson(json: any, schemaRef: string, className: string): any {
 
   const jsonPreviewStr = (typeof json === 'string' ? json : JSON.stringify(jsonObject)).substring(0, 100);
   if (schema.errors) {
-    throw Error(\`\${className} \${errorsText(schema.errors)}. JSON-preview: \${jsonPreviewStr}\`);
+    throw Error(\`\${schemaRef} \${errorsText(schema.errors)}. JSON-preview: \${jsonPreviewStr}\`);
   }
 
-  throw Error(\`\${className} Unexpected data received. JSON: \${jsonPreviewStr}\`);
+  throw Error(\`\${schemaRef} Unexpected data received. JSON: \${jsonPreviewStr}\`);
 }
 
 function errorsText(errors: ErrorObject[]): string {
@@ -41,11 +41,12 @@ $Decoders
 `;
 
 export const decoderTemplate = `
-export class $ClassDecoder {
-  public static schemaRef: string = '#/definitions/$Class'
+export class $DecoderName {
+  public static definitionName: string = '$Class';
+  public static schemaRef: string = '#/definitions/$Class';
 
   public static decode(json: any): types.$Class {
-    return validateJson(json, $ClassDecoder.schemaRef, '$Class');
+    return validateJson(json, $DecoderName.schemaRef);
   }
 }
 `;
@@ -55,5 +56,3 @@ export const modelsTemplate = `
 
 $Models
 `;
-
-export const schemaJsonTemplate = `$SchemaOutput`;

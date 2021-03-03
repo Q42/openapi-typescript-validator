@@ -13,7 +13,7 @@
       },
 
       "Component": {
-        "oneOf": [
+        "anyOf": [
           { "$ref": "#/components/schemas/TitleComponent" },
           { "$ref": "#/components/schemas/ImageComponent" }
         ]
@@ -28,6 +28,10 @@
           },
           "title": {
             "type": "string"
+          },
+          "subtitle": {
+            "type": "string",
+            "nullable": true
           }
         },
         "required": [ "type", "title" ]

@@ -72,7 +72,7 @@ References als work, this schema
       },
 
       "Component": {
-        "oneOf": [
+        "anyOf": [
           { "$ref": "#/components/schemas/TitleComponent" },
           { "$ref": "#/components/schemas/ImageComponent" }
         ]
@@ -87,6 +87,10 @@ References als work, this schema
           },
           "title": {
             "type": "string"
+          },
+          "subtitle": {
+            "type": "string",
+            "nullable": true
           }
         },
         "required": [ "type", "title" ]
@@ -121,6 +125,7 @@ export interface Screen {
 export interface TitleComponent {
   type: "title";
   title: string;
+  subtitle?: string | null;
 }
 export interface ImageComponent {
   type: "image";
@@ -128,6 +133,39 @@ export interface ImageComponent {
 }
 ```
 
+### Custom builder
+
+We also created a way to define your JSON schema a bit easier. The example above can also be written as:
+
+Example: `custom-schema.js`
+```javascript
+const { anyOf, array, constant, nillable, object, string } = require('openapi-typescript-validator');
+
+const types = {};
+
+types.Screen = object({
+  components: array('Component'),
+})
+
+types.Component = anyOf(['TitleComponent', 'ImageComponent']);
+
+types.TitleComponent = object({
+  type: constant('title'),
+  title: string,
+  subtitle: nillable(string),
+});
+
+types.ImageComponent = object({
+  type: constant('image'),
+  url: string,
+});
+
+module.exports = { types }
+```
+
+Just call `generate` with `schemaType: custom`.
+
+See [src/builder.ts](src/builder.ts) for all helpers which can be used.
 
 ## Getting started
 
@@ -171,8 +209,7 @@ and run `node generate-schemas.js`
 param | required | description
 ----- | -------- | -----------
 schemaFile | true | file location of the schema.
-schemaType | true | `yaml` or `json`
+schemaType | true | `yaml`, `json` or `custom`
 name | true | prefix for the generated files
-directory | true | location where the output files will be stored to
+directory | true | `string` or `string[]` location(s) where the output files will be stored.
 prettierOptions | false | See [Prettier Options](https://prettier.io/docs/en/options.html)
-
