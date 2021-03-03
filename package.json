@@ -13,7 +13,8 @@
     "publish": "npm publish"
   },
   "author": "Q42",
-  "license": "ISC",
+  "license": "MIT",
+  "homepage": "https://github.com/Q42/openapi-typescript-generator",
   "dependencies": {
     "@openapi-contrib/openapi-schema-to-json-schema": "^3.0.4",
     "js-yaml": "^4.0.0",
