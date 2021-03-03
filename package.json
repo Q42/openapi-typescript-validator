@@ -10,7 +10,8 @@
   "scripts": {
     "build": "tsc",
     "build:watch": "tsc --build --watch",
-    "prepublish": "rm -rf dist && npm run build"
+    "prepublish": "rm -rf dist && npm run build",
+    "postpublish": "git push && git push --tags"
   },
   "author": "Q42",
   "license": "MIT",
