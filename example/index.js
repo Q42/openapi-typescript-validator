@@ -1,5 +1,5 @@
 const path = require('path');
-const { generate } = require('openapi-typescript-generator');
+const { generate } = require('openapi-typescript-validator');
 
 async function main() {
   await generate({

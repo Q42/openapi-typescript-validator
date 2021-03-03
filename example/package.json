@@ -9,6 +9,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "openapi-typescript-generator": "file:.."
+    "openapi-typescript-validator": "file:.."
   }
 }

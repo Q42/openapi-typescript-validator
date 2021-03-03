@@ -1,4 +1,4 @@
-# openapi-typescript-generator
+# openapi-typescript-validator
 Generate typescript with ajv validation based on openapi schemas
 
 - [What does this do?](#what-does-this-do)
@@ -133,7 +133,7 @@ export interface ImageComponent {
 
 Install the package
 ```
-npm i openapi-typescript-generator --save-dev
+npm i openapi-typescript-validator --save-dev
 ```
 
 We use [ajv](https://github.com/ajv-validator/ajv) for the decoders
@@ -150,7 +150,7 @@ Create a node script called `generate-schemas.js`
 ```javascript
 
 const path = require('path');
-const { generate } = require('openapi-typescript-generator');
+const { generate } = require('openapi-typescript-validator');
 
 generate({
   schemaFile: path.join(__dirname, 'myswagger.yaml'),
