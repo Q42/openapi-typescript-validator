@@ -1,4 +1,4 @@
-export const rootTemplate = `
+export const decodersTemplate = `
 /* eslint-disable */
 /* tslint-disable */
 import Ajv, { ErrorObject } from 'ajv';
@@ -8,7 +8,6 @@ import * as types from './$SchemaName-models'
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 // !!! AUTO GENERATED CODE, DON'T TOUCH !!!
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-// const schemaHash = '$SchemaHash';
 
 const ajv = new Ajv();
 ajv.addSchema(schema);
@@ -38,7 +37,7 @@ function errorsText(errors: ErrorObject[]): string {
 }
 
 // Decoders
-$Validators
+$Decoders
 `;
 
 export const decoderTemplate = `
@@ -49,6 +48,12 @@ export class $ClassDecoder {
     return validateJson(json, $ClassDecoder.schemaRef, '$Class');
   }
 }
+`;
+
+export const modelsTemplate = `
+/* eslint-disable */
+
+$Models
 `;
 
 export const schemaJsonTemplate = `$SchemaOutput`;

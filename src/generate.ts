@@ -1,7 +1,6 @@
 import * as path from 'path';
 import { compile } from 'json-schema-to-typescript'
-import { decoderTemplate, rootTemplate } from './templates';
-import { sha1 } from 'object-hash';
+import { decoderTemplate, decodersTemplate, modelsTemplate } from './templates';
 import { mkdirSync, writeFileSync, readFileSync } from 'fs';
 import jsYaml from 'js-yaml'
 import { format, Options } from 'prettier';
@@ -46,14 +45,16 @@ export async function generate(options: GenerateOptions) {
     }, undefined, 2)
     .replace(/\#\/components\/schemas/g, '#/definitions')
 
-  const rawTypescriptModels = (await compile(JSON.parse(schemaJsonOutput), 'Schema'))
-    .replace(/\/\*\*[^]*?\*\//, '')
+  const compiledSchema = await compile(JSON.parse(schemaJsonOutput), 'Schema');
+
+  const rawTypescriptModels = modelsTemplate
+    .replace(/\$Models/g, compiledSchema)
     .replace(/\s*\[k: string\]: unknown;/g, '') // Allow additional properties in schema but not in typescript
     .replace(/export interface Schema \{[^]*?\n\}/, '');
 
   const typescriptModels = format(rawTypescriptModels, prettierOptions);
 
-  const validators = Object.entries(definitions)
+  const decoders = Object.entries(definitions)
     .filter(([name, definition]) => definition.type === 'object')
     .map(([definitionName]) => decoderTemplate
       .replace(/\$Class/g, definitionName)
@@ -61,10 +62,9 @@ export async function generate(options: GenerateOptions) {
     )
     .join('\n');
 
-  const rawDecoderOutput = rootTemplate
+  const rawDecoderOutput = decodersTemplate
     .replace(/\$SchemaName/g, name)
-    .replace(/\$SchemaHash/g, sha1(schemaJsonOutput).substr(-6))
-    .replace(/\$Validators/g, validators);
+    .replace(/\$Decoders/g, decoders);
 
   const decoderOutput = format(rawDecoderOutput, prettierOptions);
 
