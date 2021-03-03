@@ -1,6 +1,6 @@
 {
   "name": "openapi-typescript-generator",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "",
   "main": "dist/index.js",
   "files": [
@@ -8,7 +8,9 @@
   ],
   "scripts": {
     "build": "tsc",
-    "build:watch": "tsc --build --watch"
+    "build:watch": "tsc --build --watch",
+    "prepublish": "rm -rf dist && npm run build",
+    "publish": "npm publish"
   },
   "author": "Q42",
   "license": "ISC",
