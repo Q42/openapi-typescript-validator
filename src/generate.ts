@@ -20,12 +20,11 @@ export async function generate(options: GenerateOptions) {
 
   console.info(`Start generating files for ${schemaType} schema: ${schemaFile}`)
 
-  const schema = parseSchema(schemaFile, schemaType);
+  const schema = await parseSchema(schemaFile, schemaType);
 
-  const compiledSchema = await compile(JSON.parse(schema.json), 'Schema');
-
+  const compiledTypescriptModels = await compile(JSON.parse(schema.json), 'Schema');
   const rawTypescriptModels = modelsTemplate
-    .replace(/\$Models/g, compiledSchema)
+    .replace(/\$Models/g, compiledTypescriptModels)
     .replace(/\s*\[k: string\]: unknown;/g, '') // Allow additional properties in schema but not in typescript
     .replace(/export interface Schema \{[^]*?\n\}/, '');
 

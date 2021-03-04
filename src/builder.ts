@@ -4,33 +4,59 @@ import { JSONSchemaTypeName } from 'json-schema-to-typescript/dist/src/types/JSO
 type SchemaObject = JSONSchema;
 type SchemaObjectOrRef = SchemaObject | string
 
-export const boolean = { type: 'boolean' };
-export const id = { type: 'string', minLength: 1 };
-export const positiveInteger = { type: 'integer', minimum: 0 };
-export const string = { type: 'string' };
-export const number = { type: 'number' };
-export const date = { type: 'string', format: 'date' };
-export const dateTime = { type: 'string', format: 'date-time' };
-export const uri = { type: 'string', format: 'uri' };
-export const email = { type: 'string', format: 'email' };
-export const any = {};
-export const anonymousData = { additionalProperties: { type: 'string' } };
+interface CustomSchemaObject {
+  kind: 'custom'
+  object: SchemaObject;
+  optional?: boolean;
+}
 
-export const object = (properties: Record<string, any>) => ({
-  type: 'object',
-  properties,
-  required: Object.keys(properties).filter(key => !properties[key].$optional),
-});
+type PropertyValue = SchemaObject | CustomSchemaObject;
 
-export const ref = (refName: string) => ({
+export const boolean: SchemaObject = { type: 'boolean' };
+export const id: SchemaObject = { type: 'string', minLength: 1 };
+export const positiveInteger: SchemaObject = { type: 'integer', minimum: 0 };
+export const string: SchemaObject = { type: 'string' };
+export const number: SchemaObject = { type: 'number' };
+export const date: SchemaObject = { type: 'string', format: 'date' };
+export const dateTime: SchemaObject = { type: 'string', format: 'date-time' };
+export const uri: SchemaObject = { type: 'string', format: 'uri' };
+export const email: SchemaObject = { type: 'string', format: 'email' };
+export const any: SchemaObject = {};
+export const anonymousData: SchemaObject = { additionalProperties: { type: 'string' } };
+
+export const object = (properties: Record<string, PropertyValue>): SchemaObject => {
+
+  const required: string[] = [];
+  const schemaProperties: Record<string, SchemaObject> = {}
+
+  Object.entries(properties).forEach(([key, property]) => {
+    if (property.kind === 'custom') {
+      if (!property.optional) {
+        required.push('key');
+      }
+      schemaProperties[key] = property.object;
+    } else {
+      required.push(key);
+      schemaProperties[key] = property;
+    }
+  })
+
+  return {
+    type: 'object',
+    properties: schemaProperties,
+    required
+  };
+}
+
+export const ref = (refName: string): SchemaObject => ({
    $ref: `#/definitions/${refName}`
 });
 
-const autoRef = (type: SchemaObjectOrRef) => typeof type === 'string' ? ref(type) : type;
+const autoRef = (type: SchemaObjectOrRef): SchemaObject => typeof type === 'string' ? ref(type) : type;
 
-export const array = (itemType: SchemaObjectOrRef) => ({ type: 'array', items: autoRef(itemType) });
+export const array = (itemType: SchemaObjectOrRef): SchemaObject => ({ type: 'array', items: autoRef(itemType) });
 
-export const map = (itemType: SchemaObjectOrRef) => ({
+export const map = (itemType: SchemaObjectOrRef): SchemaObject => ({
   type: 'object',
   patternProperties: {
     '.*': autoRef(itemType),
@@ -41,29 +67,31 @@ export const map = (itemType: SchemaObjectOrRef) => ({
 export const nullable = (type: SchemaObjectOrRef): SchemaObject => {
   const obj = autoRef(type);
 
-  if ('type' in obj && obj.type && ['string', 'number', 'boolean', 'integer'].includes(obj.typy)) {
+  const types: JSONSchemaTypeName[] = ['string', 'number', 'boolean', 'integer']
+
+  if (typeof obj.type === 'string' && types.includes(obj.type)) {
     return {
       ...obj,
-      type: [obj.type as JSONSchemaTypeName, 'null'],
+      type: [obj.type, 'null'],
     };
   }
 
   return anyOf([obj, { type: 'null' }]);
 };
 
-export const nillable = (type: SchemaObjectOrRef) => optional(nullable(type));
+export const nillable = (type: SchemaObjectOrRef): SchemaObject => optional(nullable(type));
 
-export const optional = (type: SchemaObjectOrRef) => ({ ...autoRef(type), $optional: true });
+export const optional = (type: SchemaObjectOrRef): CustomSchemaObject => ({ kind: 'custom', object: autoRef(type), optional: true });
 
-export const oneOf = (types: SchemaObjectOrRef[]) => ({ oneOf: types.map(autoRef) });
+export const oneOf = (types: SchemaObjectOrRef[]): SchemaObject => ({ oneOf: types.map(autoRef) });
 
-export const anyOf = (types: SchemaObjectOrRef[]) => ({ anyOf: types.map(autoRef) });
+export const anyOf = (types: SchemaObjectOrRef[]): SchemaObject => ({ anyOf: types.map(autoRef) });
 
-export const enumerate = (values: string[])  => ({ type: 'string', enum: values });
+export const enumerate = (values: string[]): SchemaObject => ({ type: 'string', enum: values });
 
-export const constant = (value: string) => ({ type: 'string', enum: [value] });
+export const constant = (value: string): SchemaObject => ({ type: 'string', enum: [value] });
 
-export const compose = (...sources: SchemaObject[]) => {
+export const compose = (...sources: SchemaObject[]): SchemaObject => {
   if (sources === undefined) {
     throw new Error(`Sources for 'compose' cannot be undefined`);
   }

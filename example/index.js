@@ -22,6 +22,13 @@ async function main() {
     name: 'custom',
     directory: path.join(__dirname, '/generated')
   })
+
+  await generate({
+    schemaFile: path.join(__dirname, 'schemas/reviews-schema.js'),
+    schemaType: 'custom',
+    name: 'reviews',
+    directory: path.join(__dirname, '/generated')
+  })
 }
 
 main()
