@@ -41,5 +41,9 @@
     "@types/object-hash": "^1.3.4",
     "prettier": "^2.2.1",
     "typescript": "^4.2.2"
+  },
+  "peerDependencies": {
+    "ajv": "^8.0.0",
+    "ajv-formats": "^2.0.0"
   }
 }

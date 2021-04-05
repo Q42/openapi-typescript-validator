@@ -4,12 +4,17 @@ export const decodersTemplate = `
 import Ajv, { ErrorObject } from 'ajv';
 import schema from './$SchemaName-schema.json';
 import * as types from './$SchemaName-models'
+import addFormats from "ajv-formats";
 
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 // !!! AUTO GENERATED CODE, DON'T TOUCH !!!
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 const ajv = new Ajv({ strict: false });
+
+// Adds more formats like date-time, int32, and int64.
+addFormats(ajv);
+
 ajv.addSchema(schema);
 
 function validateJson(json: any, schemaRef: string, definitionName: string): any {
@@ -33,7 +38,7 @@ function validateJson(json: any, schemaRef: string, definitionName: string): any
 }
 
 function errorsText(errors: ErrorObject[]): string {
-  return errors.map(error => \`\${error.dataPath}: \${error.message}\`).join('\\n')
+  return errors.map(error => \`\${error.instancePath}: \${error.message}\`).join('\\n')
 }
 
 // Decoders
