@@ -33,7 +33,7 @@ function validateJson(json: any, schemaRef: string, definitionName: string): any
 }
 
 function errorsText(errors: ErrorObject[]): string {
-  return errors.map(error => \`\${error.dataPath}: \${error.message}\`).join('\\n')
+  return errors.map(error => \`\${error.instancePath}: \${error.message}\`).join('\\n')
 }
 
 // Decoders
