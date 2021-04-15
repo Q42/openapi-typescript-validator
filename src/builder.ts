@@ -17,10 +17,6 @@ export const id: SchemaObject = { type: 'string', minLength: 1 };
 export const positiveInteger: SchemaObject = { type: 'integer', minimum: 0 };
 export const string: SchemaObject = { type: 'string' };
 export const number: SchemaObject = { type: 'number' };
-export const date: SchemaObject = { type: 'string', format: 'date' };
-export const dateTime: SchemaObject = { type: 'string', format: 'date-time' };
-export const uri: SchemaObject = { type: 'string', format: 'uri' };
-export const email: SchemaObject = { type: 'string', format: 'email' };
 export const any: SchemaObject = {};
 export const anonymousData: SchemaObject = { additionalProperties: { type: 'string' } };
 
