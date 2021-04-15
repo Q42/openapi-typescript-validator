@@ -96,5 +96,21 @@ export const compose = (...sources: SchemaObject[]): SchemaObject => {
     throw new Error(`Sources for 'compose' cannot be undefined`);
   }
 
-  return object(Object.assign({}, ...sources.map(obj => obj.properties)));
+  const properties: SchemaObject['properties'] = {}
+  const requiredRecord: Record<string, boolean> = {};
+
+  sources.forEach(source => {
+    Object.assign(properties, source.properties);
+    if (Array.isArray(source.required)) {
+      source.required.forEach(key => {
+        requiredRecord[key] = true
+      })
+    }
+  })
+
+  return {
+    type: 'object',
+    properties,
+    required: Object.keys(requiredRecord),
+  }
 };

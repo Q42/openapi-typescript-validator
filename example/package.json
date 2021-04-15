@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "ajv": "^8.1.0",
     "openapi-typescript-validator": "file:.."
   }
 }
