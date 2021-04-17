@@ -12,7 +12,7 @@
     "build:watch": "tsc --build --watch",
     "prepublishOnly": "rm -rf dist && npm run build",
     "postpublish": "git push && git push --tags",
-    "start:example": "(cd example && npm start)"
+    "test": "(cd test && npm test)"
   },
   "keywords": [
     "openapi",
