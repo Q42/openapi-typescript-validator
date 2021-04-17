@@ -29,4 +29,19 @@ export interface GenerateOptions {
    * This will reduce the build size, but might increase the time it takes to treeshake the bundle
    */
   mergeDecoders?: boolean;
+
+  /**
+   * don't output the meta file
+   */
+  skipMetaFile?: boolean;
+
+  /**
+   * don't output the schema file
+   */
+  skipSchemaFile?: boolean;
+
+  /**
+   * don't output decoder files
+   */
+  skipDecoders?: boolean;
 }

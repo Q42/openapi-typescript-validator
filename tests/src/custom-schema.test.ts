@@ -18,7 +18,7 @@ describe("custom-schema", () => {
 
   test("schema should match", () => {
     const file = fs.readFileSync(
-      path.join(generatedDir, `${name}-schema.json`),
+      path.join(generatedDir, `schema.json`),
       "utf8"
     );
     expect(file).not.toBeUndefined();
@@ -46,7 +46,7 @@ describe("custom-schema", () => {
 
   test("models should match", () => {
     const file = fs.readFileSync(
-      path.join(generatedDir, `${name}-models.ts`),
+      path.join(generatedDir, `models.ts`),
       "utf8"
     );
     expect(file).not.toBeUndefined();
@@ -54,7 +54,7 @@ describe("custom-schema", () => {
   });
 });
 
-describe.only("custom-schema - merged", () => {
+describe("custom-schema - merged", () => {
   const name = "custom";
   const generatedDir = path.join(__dirname, "../generated", `${name}-merged`);
   const schemaDir = path.join(__dirname, "../schemas");

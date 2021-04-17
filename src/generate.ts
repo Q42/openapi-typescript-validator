@@ -49,31 +49,38 @@ export async function generate(options: GenerateOptions) {
     return !decoderWhitelistById || decoderWhitelistById[name];
   });
 
-  if (options.mergeDecoders === true) {
-    generateMergedDecoders(
-      definitionNames,
-      schema,
-      name,
-      directories,
-      prettierOptions
-    );
-  } else {
-    generateValidators(
-      definitionNames,
-      schema,
-      name,
-      directories,
-      prettierOptions
-    );
+  if (options.skipDecoders !== true) {
+    if (options.mergeDecoders === true) {
+      generateMergedDecoders(
+        definitionNames,
+        schema,
+        name,
+        directories,
+        prettierOptions
+      );
+    } else {
+      generateValidators(
+        definitionNames,
+        schema,
+        name,
+        directories,
+        prettierOptions
+      );
+    }
   }
 
-  generateMetaFile(allDefinitions, name, directories, prettierOptions);
+  if (options.skipMetaFile !== true) {
+    generateMetaFile(allDefinitions, name, directories, prettierOptions);
+  }
 
   directories.forEach((directory) => {
     mkdirSync(directory, { recursive: true });
 
     writeFileSync(path.join(directory, `models.ts`), typescriptModels);
-    writeFileSync(path.join(directory, `schema.json`), schema.json);
+
+    if (options.skipSchemaFile !== true) {
+      writeFileSync(path.join(directory, `schema.json`), schema.json);
+    }
   });
 
   console.info(`Successfully generated files for ${schemaFile}`);

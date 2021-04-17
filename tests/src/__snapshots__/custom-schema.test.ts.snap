@@ -7,11 +7,11 @@ import { validateJson, Validator } from \\"./helpers\\";
 import { Screen, ImageComponent } from \\"./models\\";
 import { ScreenValidator, ImageComponentValidator } from \\"./validators\\";
 
-export const ScreenDecoder = {
+export const ScreenDecoder: Decoder<Screen> = {
   definitionName: \\"Screen\\",
   schemaRef: \\"#/definitions/Screen\\",
 
-  decode(json: any): Screen {
+  decode(json: unknown): Screen {
     return validateJson(
       json,
       ScreenValidator as Validator,
@@ -19,11 +19,11 @@ export const ScreenDecoder = {
     );
   },
 };
-export const ImageComponentDecoder = {
+export const ImageComponentDecoder: Decoder<ImageComponent> = {
   definitionName: \\"ImageComponent\\",
   schemaRef: \\"#/definitions/ImageComponent\\",
 
-  decode(json: any): ImageComponent {
+  decode(json: unknown): ImageComponent {
     return validateJson(
       json,
       ImageComponentValidator as Validator,
@@ -37,6 +37,8 @@ export const ImageComponentDecoder = {
 exports[`custom-schema - merged helpers.ts 1`] = `
 "/* eslint-disable */
 import type { ErrorObject } from \\"ajv\\";
+
+export interface Decoder {}
 
 export interface Validator {
   (json: unknown): boolean;

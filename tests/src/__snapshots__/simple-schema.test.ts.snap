@@ -7,11 +7,11 @@ import { validateJson, Validator } from \\"../helpers\\";
 import { User } from \\"../../models\\";
 import { UserValidator } from \\"./validator\\";
 
-export const UserDecoder = {
+export const UserDecoder: Decoder<User> = {
   definitionName: \\"User\\",
   schemaRef: \\"#/definitions/User\\",
 
-  decode(json: any): User {
+  decode(json: unknown): User {
     return validateJson(
       json,
       UserValidator as Validator,
@@ -121,6 +121,8 @@ exports[`simple-schema decoders helpers.ts 1`] = `
 "/* eslint-disable */
 import type { ErrorObject } from \\"ajv\\";
 
+export interface Decoder {}
+
 export interface Validator {
   (json: unknown): boolean;
   errors?: ErrorObject[];
@@ -173,15 +175,15 @@ exports[`simple-schema meta.ts 1`] = `
 "/* eslint-disable */
 import { User } from \\"./models\\";
 
-export const schemaMeta = {
-  User: meta<User>(\\"User\\"),
+export const schemaDefinitions = {
+  User: info<User>(\\"User\\"),
 };
 
-export interface Meta<T> {
+export interface SchemaInfo<T> {
   definitionName: string;
 }
 
-function meta<T>(definitionName: string): Meta<T> {
+function info<T>(definitionName: string): SchemaInfo<T> {
   return {
     definitionName,
   };

@@ -11,12 +11,12 @@ export function generateMetaFile(
 ): void {
   const metas = definitionNames
     .map((definitionName) => {
-      return `${definitionName}: meta<${definitionName}>('${definitionName}'),`;
+      return `${definitionName}: info<${definitionName}>('${definitionName}'),`;
     })
     .join("\n");
 
   const rawOutput = metaTemplate
-    .replace(/\$Metas/g, metas)
+    .replace(/\$Definitions/g, metas)
     .replace(/\$ModelImports/g, definitionNames.join(", "))
     .replace(/\$PackageName/g, packageName);
 
