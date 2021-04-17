@@ -1,6 +1,6 @@
 import path from "path";
 import fs from "fs";
-const { generate } = require("openapi-typescript-validator");
+import { generate } from "openapi-typescript-validator";
 
 describe("custom-schema", () => {
   const name = "custom";
@@ -42,6 +42,76 @@ describe("custom-schema", () => {
       const file = fs.readFileSync(path.join(decodersDir, `index.ts`), "utf8");
       expect(file).toMatchSnapshot();
     });
+  });
+
+  test("models should match", () => {
+    const file = fs.readFileSync(
+      path.join(generatedDir, `${name}-models.ts`),
+      "utf8"
+    );
+    expect(file).not.toBeUndefined();
+    expect(file).toMatchSnapshot();
+  });
+});
+
+describe.only("custom-schema - merged", () => {
+  const name = "custom";
+  const generatedDir = path.join(__dirname, "../generated", `${name}-merged`);
+  const schemaDir = path.join(__dirname, "../schemas");
+
+  beforeAll(async () => {
+    await generate({
+      schemaFile: path.join(schemaDir, "custom-schema.js"),
+      schemaType: "custom",
+      name,
+      directory: generatedDir,
+      mergeDecoders: true,
+    });
+  });
+
+  test("schema should match", () => {
+    const file = fs.readFileSync(
+      path.join(generatedDir, `${name}-schema.json`),
+      "utf8"
+    );
+    expect(file).not.toBeUndefined();
+    expect(file).toMatchSnapshot();
+  });
+
+  test("decoders", () => {
+    const file = fs.readFileSync(
+      path.join(generatedDir, `decoders.ts`),
+      "utf8"
+    );
+
+    expect(file).toMatchSnapshot();
+  });
+
+  test("validators.d.ts", () => {
+    const file = fs.readFileSync(
+      path.join(generatedDir, `validators.d.ts`),
+      "utf8"
+    );
+
+    expect(file).toMatchSnapshot();
+  });
+
+  test("validators.js", () => {
+    const file = fs.readFileSync(
+      path.join(generatedDir, `validators.js`),
+      "utf8"
+    );
+
+    expect(file).not.toBeUndefined();
+  });
+
+  test("helpers.ts", () => {
+    const file = fs.readFileSync(
+      path.join(generatedDir, `helpers.ts`),
+      "utf8"
+    );
+
+    expect(file).toMatchSnapshot();
   });
 
   test("models should match", () => {

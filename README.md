@@ -214,3 +214,4 @@ name | true | prefix for the generated files |
 directory | true | `string` or `string[]` location(s) where the output files will be stored. |
 prettierOptions | false | See [Prettier Options](https://prettier.io/docs/en/options.html) | prettier typescript options
 decoders | false | `string[]` list of definitions to generate decoders for | generates decoder for every element. With `schemaType: 'custom`, it's possible to also return an `decoders: string[]`
+mergeDecoders | false | Merge decoders into a single file. This will reduce the bundle size, but might increase the time it takes to treeshake the bundle | `false`

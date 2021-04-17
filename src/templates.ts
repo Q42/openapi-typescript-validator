@@ -63,12 +63,6 @@ function errorsText(errors: ErrorObject[]): string {
 `;
 
 export const decoderTemplate = `
-/* eslint-disable */
-
-import { validateJson, Validator } from '../helpers';
-import { $Class } from '../../$PackageName-models';
-import { $ValidatorName } from './validator';
-
 export const $DecoderName = {
   definitionName: '$Class',
   schemaRef: '#/definitions/$Class',
@@ -77,6 +71,26 @@ export const $DecoderName = {
     return validateJson(json, $ValidatorName as Validator, $DecoderName.definitionName);
   }
 }
+`;
+
+export const decodersMergedFileTemplate = `
+/* eslint-disable */
+
+import { validateJson, Validator } from './helpers';
+import { $ModelImports } from './$PackageName-models';
+import { $ValidatorImports } from './validators';
+
+$Decoders
+`;
+
+export const decoderSingleFileTemplate = `
+/* eslint-disable */
+
+import { validateJson, Validator } from '../helpers';
+import { $Class } from '../../$PackageName-models';
+import { $ValidatorName } from './validator';
+
+${decoderTemplate}
 `;
 
 export const decodersIndexTemplate = `
