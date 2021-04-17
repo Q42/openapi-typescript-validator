@@ -1,2 +1,3 @@
-export { generate, GenerateOptions } from './generate';
+export { generate } from './generate';
+export { GenerateOptions } from './GenerateOptions';
 export * from './builder';

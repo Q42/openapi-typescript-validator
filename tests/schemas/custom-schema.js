@@ -25,4 +25,7 @@ types.Meta = object({
   dateTime: string,
 })
 
-module.exports = { types }
+module.exports = {
+  types,
+  decoders: ['Screen', 'ImageComponent']
+}

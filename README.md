@@ -206,10 +206,11 @@ and run `node generate-schemas.js`
 ### generate
 `generate` can be called with `GenerateOptions`
 
-param | required | description
------ | -------- | -----------
-schemaFile | true | file location of the schema.
-schemaType | true | `yaml`, `json` or `custom`
-name | true | prefix for the generated files
-directory | true | `string` or `string[]` location(s) where the output files will be stored.
-prettierOptions | false | See [Prettier Options](https://prettier.io/docs/en/options.html)
+param | required | description | default
+----- | -------- | ----------- | -------
+schemaFile | true | file location of the schema. |
+schemaType | true | `yaml`, `json` or `custom` |
+name | true | prefix for the generated files |
+directory | true | `string` or `string[]` location(s) where the output files will be stored. |
+prettierOptions | false | See [Prettier Options](https://prettier.io/docs/en/options.html) | prettier typescript options
+decoders | false | `string[]` list of definitions to generate decoders for | generates decoder for every element. With `schemaType: 'custom`, it's possible to also return an `decoders: string[]`

@@ -3,7 +3,6 @@
 exports[`compose-schema decoders index.ts 1`] = `
 "/* eslint-disable */
 
-export { BaseComponentDecoder } from \\"./BaseComponent/decoder\\";
 export { FooComponentDecoder } from \\"./FooComponent/decoder\\";
 export { BarComponentDecoder } from \\"./BarComponent/decoder\\";
 "

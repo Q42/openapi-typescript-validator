@@ -9,6 +9,7 @@ export type SchemaType = 'yaml' | 'json' | 'custom';
 export interface ParsedSchema {
   json: string;
   definitions: Record<string, JSONSchema>;
+  whitelistedDecoders: string[] | undefined;
 }
 
 export function parseSchema(inputFilePath: string, schemaType: SchemaType): ParsedSchema {
@@ -52,7 +53,8 @@ function parseOpenApiSchema(inputFilePath: string, schemaType: 'yaml' | 'json'):
 
   return {
     json: schemaJsonOutput,
-    definitions
+    definitions,
+    whitelistedDecoders: undefined,
   }
 }
 
@@ -82,5 +84,6 @@ function parseCustomSchema(inputFilePath: string): ParsedSchema {
   return {
     json: schemaJsonOutput,
     definitions,
+    whitelistedDecoders: schema.decoders,
   }
 }

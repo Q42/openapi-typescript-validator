@@ -1,9 +1,9 @@
 import Ajv from "ajv";
 import * as path from "path";
 import { compile } from "json-schema-to-typescript";
+import keyby from "lodash.keyby";
 import {
   decoderTemplate,
-  decodersTemplate,
   modelsTemplate,
   validatorsTemplate,
   validationHelperTemplate,
@@ -11,16 +11,9 @@ import {
 } from "./templates";
 import { mkdirSync, writeFileSync } from "fs";
 import { format, Options } from "prettier";
-import { ParsedSchema, parseSchema, SchemaType } from "./parse-schema";
+import { ParsedSchema, parseSchema } from "./parse-schema";
 import standaloneCode from "ajv/dist/standalone";
-
-export interface GenerateOptions {
-  schemaFile: string;
-  schemaType: SchemaType;
-  name: string;
-  directory: string | string[];
-  prettierOptions?: Options;
-}
+import { GenerateOptions } from "./GenerateOptions";
 
 export async function generate(options: GenerateOptions) {
   const { name, schemaFile, schemaType } = options;
@@ -83,7 +76,25 @@ export async function generate(options: GenerateOptions) {
   //   prettierOptions
   // );
 
-  generateValidators(schema, name, directories, prettierOptions);
+  const allDefinitions = Object.keys(schema.definitions);
+
+  const whistlistedDecoders = options.decoders ?? schema.whitelistedDecoders;
+  const decoderWhitelistById = whistlistedDecoders
+    ? keyby(whistlistedDecoders, (d) => d)
+    : undefined;
+
+  const definitionNames = allDefinitions.filter((name) => {
+    if (schema.definitions[name]?.type !== "object") return false;
+    return !decoderWhitelistById || decoderWhitelistById[name];
+  });
+
+  generateValidators(
+    definitionNames,
+    schema,
+    name,
+    directories,
+    prettierOptions
+  );
 
   directories.forEach((directory) => {
     mkdirSync(directory, { recursive: true });
@@ -110,6 +121,7 @@ interface ParsedValidators {
 }
 
 function generateValidators(
+  definitionNames: string[],
   schema: ParsedSchema,
   packageName: string,
   outDirs: string[],
@@ -120,55 +132,53 @@ function generateValidators(
 
   const indexExports: string[] = [];
 
-  Object.entries(schema.definitions)
-    .filter(([name, definition]) => definition.type === "object")
-    .forEach(([definitionName]) => {
-      const validatorName = `${definitionName}Validator`;
-      const decoderName = `${definitionName}Decoder`;
+  definitionNames.forEach((definitionName) => {
+    const validatorName = `${definitionName}Validator`;
+    const decoderName = `${definitionName}Decoder`;
 
-      const jsOutput = standaloneCode(ajv, {
-        [validatorName]: `#/definitions/${definitionName}`,
-      }).replace(/exports\.(\w+Validator) = (\w+)/gm, "export const $1 = $2");
+    const jsOutput = standaloneCode(ajv, {
+      [validatorName]: `#/definitions/${definitionName}`,
+    }).replace(/exports\.(\w+Validator) = (\w+)/gm, "export const $1 = $2");
 
-      const rawValidatorsOutput = validatorsTemplate.replace(
-        /\$Validators/g,
-        jsOutput
+    const rawValidatorsOutput = validatorsTemplate.replace(
+      /\$Validators/g,
+      jsOutput
+    );
+
+    const validatorsOutput = format(rawValidatorsOutput, prettierOptions);
+
+    const rawDecoderOutput = decoderTemplate
+      .replace(/\$DecoderName/g, decoderName)
+      .replace(/\$Class/g, definitionName)
+      .replace(/\$ValidatorName/g, validatorName)
+      .replace(/\$PackageName/g, packageName)
+      .trim();
+
+    const decoderOutput = format(rawDecoderOutput, prettierOptions);
+
+    const rawValidatorDefinitionsOutput = `export function ${validatorName}(json: unknown): boolean;`;
+
+    const validatorDefinitionsOutput = format(
+      rawValidatorDefinitionsOutput,
+      prettierOptions
+    );
+
+    indexExports.push(
+      `export { ${decoderName} } from './${definitionName}/decoder';`
+    );
+
+    outDirs.forEach((outDir) => {
+      const decoderDir = path.join(outDir, "decoders", definitionName);
+      mkdirSync(decoderDir, { recursive: true });
+
+      writeFileSync(path.join(decoderDir, `decoder.ts`), decoderOutput);
+      writeFileSync(path.join(decoderDir, `validator.js`), validatorsOutput);
+      writeFileSync(
+        path.join(decoderDir, `validator.d.ts`),
+        validatorDefinitionsOutput
       );
-
-      const validatorsOutput = format(rawValidatorsOutput, prettierOptions);
-
-      const rawDecoderOutput = decoderTemplate
-        .replace(/\$DecoderName/g, decoderName)
-        .replace(/\$Class/g, definitionName)
-        .replace(/\$ValidatorName/g, validatorName)
-        .replace(/\$PackageName/g, packageName)
-        .trim();
-
-      const decoderOutput = format(rawDecoderOutput, prettierOptions);
-
-      const rawValidatorDefinitionsOutput = `export function ${validatorName}(json: unknown): boolean;`;
-
-      const validatorDefinitionsOutput = format(
-        rawValidatorDefinitionsOutput,
-        prettierOptions
-      );
-
-      indexExports.push(
-        `export { ${decoderName} } from './${definitionName}/decoder';`
-      );
-
-      outDirs.forEach((outDir) => {
-        const decoderDir = path.join(outDir, "decoders", definitionName);
-        mkdirSync(decoderDir, { recursive: true });
-
-        writeFileSync(path.join(decoderDir, `decoder.ts`), decoderOutput);
-        writeFileSync(path.join(decoderDir, `validator.js`), validatorsOutput);
-        writeFileSync(
-          path.join(decoderDir, `validator.d.ts`),
-          validatorDefinitionsOutput
-        );
-      });
     });
+  });
 
   const helperOutput = format(validationHelperTemplate, prettierOptions);
 

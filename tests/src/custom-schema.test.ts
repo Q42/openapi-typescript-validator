@@ -30,16 +30,18 @@ describe("custom-schema", () => {
 
     test("file structure", () => {
       const dir = fs.readdirSync(decodersDir);
-      expect(dir).toEqual(["ImageComponent", "Meta", "Screen", "TitleComponent", "helpers.ts", "index.ts"]);
+      expect(dir).toEqual([
+        "ImageComponent",
+        "Screen",
+        "helpers.ts",
+        "index.ts",
+      ]);
     });
 
-    test('index.ts', () => {
-      const file = fs.readFileSync(
-        path.join(decodersDir, `index.ts`),
-        "utf8"
-      );
+    test("index.ts", () => {
+      const file = fs.readFileSync(path.join(decodersDir, `index.ts`), "utf8");
       expect(file).toMatchSnapshot();
-    })
+    });
   });
 
   test("models should match", () => {

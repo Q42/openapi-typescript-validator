@@ -4,9 +4,7 @@ exports[`custom-schema decoders index.ts 1`] = `
 "/* eslint-disable */
 
 export { ScreenDecoder } from \\"./Screen/decoder\\";
-export { TitleComponentDecoder } from \\"./TitleComponent/decoder\\";
 export { ImageComponentDecoder } from \\"./ImageComponent/decoder\\";
-export { MetaDecoder } from \\"./Meta/decoder\\";
 "
 `;
 

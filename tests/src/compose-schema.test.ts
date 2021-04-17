@@ -1,6 +1,6 @@
 import path from "path";
 import fs from "fs";
-const { generate } = require("openapi-typescript-validator");
+import { generate } from "openapi-typescript-validator";
 
 describe("compose-schema", () => {
   const name = "compose";
@@ -13,6 +13,7 @@ describe("compose-schema", () => {
       schemaType: "custom",
       name,
       directory: generatedDir,
+      decoders: ['BarComponent', 'FooComponent', 'notfound']
     });
   });
 
@@ -32,7 +33,6 @@ describe("compose-schema", () => {
       const dir = fs.readdirSync(decodersDir);
       expect(dir).toEqual([
         "BarComponent",
-        "BaseComponent",
         "FooComponent",
         "helpers.ts",
         "index.ts",
