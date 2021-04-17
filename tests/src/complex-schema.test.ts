@@ -25,36 +25,29 @@ describe("complex-schema", () => {
     expect(file).toMatchSnapshot();
   });
 
-  test("decoders should match", () => {
-    const file = fs.readFileSync(
-      path.join(generatedDir, `${name}-decoders.ts`),
-      "utf8"
-    );
-    expect(file).not.toBeUndefined();
-    expect(file).toMatchSnapshot();
+  describe("decoders", () => {
+    const decodersDir = path.join(generatedDir, `decoders`);
+
+    test("file structure", () => {
+      const dir = fs.readdirSync(decodersDir);
+      expect(dir).toEqual([
+        "ImageComponent",
+        "Screen",
+        "TitleComponent",
+        "helpers.ts",
+        "index.ts",
+      ]);
+    });
+
+    test("index.ts", () => {
+      const file = fs.readFileSync(path.join(decodersDir, `index.ts`), "utf8");
+      expect(file).toMatchSnapshot();
+    });
   });
 
   test("models should match", () => {
     const file = fs.readFileSync(
       path.join(generatedDir, `${name}-models.ts`),
-      "utf8"
-    );
-    expect(file).not.toBeUndefined();
-    expect(file).toMatchSnapshot();
-  });
-
-  test("validators.js should match", () => {
-    const file = fs.readFileSync(
-      path.join(generatedDir, `${name}-validators.js`),
-      "utf8"
-    );
-    expect(file).not.toBeUndefined();
-    expect(file).toMatchSnapshot();
-  });
-
-  test("validators.d.ts should match", () => {
-    const file = fs.readFileSync(
-      path.join(generatedDir, `${name}-validators.d.ts`),
       "utf8"
     );
     expect(file).not.toBeUndefined();
