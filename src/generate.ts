@@ -10,6 +10,7 @@ import {
   generateMergedDecoders,
   generateValidators,
 } from "./generate/generate-decoders";
+import { generateMetaFile } from "./generate/generate-meta";
 
 export async function generate(options: GenerateOptions) {
   const { name, schemaFile, schemaType } = options;
@@ -66,17 +67,14 @@ export async function generate(options: GenerateOptions) {
     );
   }
 
+  generateMetaFile(allDefinitions, name, directories, prettierOptions);
+
   directories.forEach((directory) => {
     mkdirSync(directory, { recursive: true });
 
-    writeFileSync(path.join(directory, `${name}-models.ts`), typescriptModels);
-    writeFileSync(path.join(directory, `${name}-schema.json`), schema.json);
+    writeFileSync(path.join(directory, `models.ts`), typescriptModels);
+    writeFileSync(path.join(directory, `schema.json`), schema.json);
   });
 
   console.info(`Successfully generated files for ${schemaFile}`);
-}
-
-interface ParsedValidators {
-  fileContent: string;
-  validatorNames: string[];
 }

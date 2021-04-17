@@ -18,7 +18,7 @@ describe("complex-schema", () => {
 
   test("schema should match", () => {
     const file = fs.readFileSync(
-      path.join(generatedDir, `${name}-schema.json`),
+      path.join(generatedDir, `schema.json`),
       "utf8"
     );
     expect(file).not.toBeUndefined();
@@ -47,7 +47,7 @@ describe("complex-schema", () => {
 
   test("models should match", () => {
     const file = fs.readFileSync(
-      path.join(generatedDir, `${name}-models.ts`),
+      path.join(generatedDir, `models.ts`),
       "utf8"
     );
     expect(file).not.toBeUndefined();

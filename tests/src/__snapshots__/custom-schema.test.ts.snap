@@ -4,7 +4,7 @@ exports[`custom-schema - merged decoders 1`] = `
 "/* eslint-disable */
 
 import { validateJson, Validator } from \\"./helpers\\";
-import { Screen, ImageComponent } from \\"./custom-models\\";
+import { Screen, ImageComponent } from \\"./models\\";
 import { ScreenValidator, ImageComponentValidator } from \\"./validators\\";
 
 export const ScreenDecoder = {

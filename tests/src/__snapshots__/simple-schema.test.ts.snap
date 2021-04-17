@@ -4,7 +4,7 @@ exports[`simple-schema decoders UserDecoder decoder 1`] = `
 "/* eslint-disable */
 
 import { validateJson, Validator } from \\"../helpers\\";
-import { User } from \\"../../simple-models\\";
+import { User } from \\"../../models\\";
 import { UserValidator } from \\"./validator\\";
 
 export const UserDecoder = {
@@ -166,6 +166,26 @@ exports[`simple-schema decoders index.ts 1`] = `
 "/* eslint-disable */
 
 export { UserDecoder } from \\"./User/decoder\\";
+"
+`;
+
+exports[`simple-schema meta.ts 1`] = `
+"/* eslint-disable */
+import { User } from \\"./models\\";
+
+export const schemaMeta = {
+  User: meta<User>(\\"User\\"),
+};
+
+export interface Meta<T> {
+  definitionName: string;
+}
+
+function meta<T>(definitionName: string): Meta<T> {
+  return {
+    definitionName,
+  };
+}
 "
 `;
 

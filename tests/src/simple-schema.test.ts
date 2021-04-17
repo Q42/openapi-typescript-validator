@@ -16,9 +16,18 @@ describe("simple-schema", () => {
     });
   });
 
+  test("meta.ts", () => {
+    const file = fs.readFileSync(
+      path.join(generatedDir, `meta.ts`),
+      "utf8"
+    );
+    expect(file).not.toBeUndefined();
+    expect(file).toMatchSnapshot();
+  });
+
   test("schema should match", () => {
     const file = fs.readFileSync(
-      path.join(generatedDir, `${name}-schema.json`),
+      path.join(generatedDir, `schema.json`),
       "utf8"
     );
     expect(file).not.toBeUndefined();
@@ -88,7 +97,7 @@ describe("simple-schema", () => {
 
   test("models should match", () => {
     const file = fs.readFileSync(
-      path.join(generatedDir, `${name}-models.ts`),
+      path.join(generatedDir, `models.ts`),
       "utf8"
     );
     expect(file).not.toBeUndefined();

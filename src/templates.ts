@@ -2,8 +2,8 @@ export const decodersTemplate = `
 /* eslint-disable */
 
 import { ErrorObject } from 'ajv';
-import * as types from './$SchemaName-models'
-import { $ValidatorImports } from './$SchemaName-validators';
+import * as types from './models'
+import { $ValidatorImports } from './validators';
 
 interface Validator {
   (json: unknown): boolean;
@@ -77,7 +77,7 @@ export const decodersMergedFileTemplate = `
 /* eslint-disable */
 
 import { validateJson, Validator } from './helpers';
-import { $ModelImports } from './$PackageName-models';
+import { $ModelImports } from './models';
 import { $ValidatorImports } from './validators';
 
 $Decoders
@@ -87,7 +87,7 @@ export const decoderSingleFileTemplate = `
 /* eslint-disable */
 
 import { validateJson, Validator } from '../helpers';
-import { $Class } from '../../$PackageName-models';
+import { $Class } from '../../models';
 import { $ValidatorName } from './validator';
 
 ${decoderTemplate}
@@ -109,4 +109,23 @@ export const validatorsTemplate = `
 /* eslint-disable */
 
 $Validators
+`;
+
+export const metaTemplate = `
+/* eslint-disable */
+import { $ModelImports } from './models';
+
+export const schemaMeta = {
+  $Metas
+}
+
+export interface Meta<T> {
+  definitionName: string;
+}
+
+function meta<T>(definitionName: string): Meta<T> {
+  return {
+    definitionName
+  }
+}
 `;
