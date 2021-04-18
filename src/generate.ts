@@ -6,11 +6,12 @@ import { mkdirSync, writeFileSync } from "fs";
 import { format } from "prettier";
 import { parseSchema } from "./parse-schema";
 import { GenerateOptions } from "./GenerateOptions";
-import {
-  generateMergedDecoders,
-  generateValidators,
-} from "./generate/generate-decoders";
 import { generateMetaFile } from "./generate/generate-meta";
+import {
+  generateCompileDecoders,
+  generateStandaloneDecoders,
+  generateStandaloneMergedDecoders,
+} from "./generate/generate-decoders";
 
 export async function generate(options: GenerateOptions) {
   const { name, schemaFile, schemaType } = options;
@@ -50,8 +51,16 @@ export async function generate(options: GenerateOptions) {
   });
 
   if (options.skipDecoders !== true) {
-    if (options.mergeDecoders === true) {
-      generateMergedDecoders(
+    if (!options.standalone) {
+      generateCompileDecoders(
+        definitionNames,
+        schema,
+        name,
+        directories,
+        prettierOptions
+      );
+    } else if (options.mergeDecoders === true) {
+      generateStandaloneMergedDecoders(
         definitionNames,
         schema,
         name,
@@ -59,7 +68,7 @@ export async function generate(options: GenerateOptions) {
         prettierOptions
       );
     } else {
-      generateValidators(
+      generateStandaloneDecoders(
         definitionNames,
         schema,
         name,

@@ -10,10 +10,10 @@
 		},
 		{
 			"type": "npm",
-			"script": "start:example",
+			"script": "test",
 			"group": "build",
 			"problemMatcher": [],
-			"label": "Start example",
+			"label": "Test",
 		}
 	]
 }

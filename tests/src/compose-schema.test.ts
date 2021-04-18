@@ -13,7 +13,8 @@ describe("compose-schema", () => {
       schemaType: "custom",
       name,
       directory: generatedDir,
-      decoders: ['BarComponent', 'FooComponent', 'notfound']
+      decoders: ['BarComponent', 'FooComponent', 'notfound'],
+      standalone: true,
     });
   });
 

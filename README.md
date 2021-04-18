@@ -218,3 +218,4 @@ param | required | description | default
 `skipMetaFile` | false | don't output the meta file | `false`
 `skipSchemaFile` | false | don't output the schema file | `false`
 `skipDecoders` | false | don't output the decoder files | `false`
+`standalone` | false | generates all validators up front. Read more about at the [AJV 7 update](https://openjsf.org/blog/2021/02/11/project-news-ajv-version-7-big-changes-and-improvements/) at `Code generation performance` | `false`

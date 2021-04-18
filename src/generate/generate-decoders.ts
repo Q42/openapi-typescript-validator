@@ -8,12 +8,14 @@ import {
   decoderSingleFileTemplate,
   validationHelperTemplate,
   validatorsTemplate,
+  ajvCompileDecoderTemplate,
+  ajvCompileDecodersTemplate,
 } from "../templates";
 import standaloneCode from "ajv/dist/standalone";
 import { mkdirSync, writeFileSync } from "fs";
 import * as path from "path";
 
-export function generateValidators(
+export function generateStandaloneDecoders(
   definitionNames: string[],
   schema: ParsedSchema,
   packageName: string,
@@ -81,7 +83,7 @@ export function generateValidators(
   });
 }
 
-export function generateMergedDecoders(
+export function generateStandaloneMergedDecoders(
   definitionNames: string[],
   schema: ParsedSchema,
   packageName: string,
@@ -123,12 +125,45 @@ export function generateMergedDecoders(
   const helpers = helpersOutput(prettierOptions);
 
   outDirs.forEach((outDir) => {
-    mkdirSync(outDir, { recursive: true })
+    mkdirSync(outDir, { recursive: true });
 
     writeFileSync(path.join(outDir, `helpers.ts`), helpers);
     writeFileSync(path.join(outDir, `decoders.ts`), decoderOutput);
     writeFileSync(path.join(outDir, `validators.js`), validatorsOutput);
     writeFileSync(path.join(outDir, `validators.d.ts`), validatorDefinitions);
+  });
+}
+
+export function generateCompileDecoders(
+  definitionNames: string[],
+  schema: ParsedSchema,
+  packageName: string,
+  outDirs: string[],
+  prettierOptions: Options
+): void {
+  const decoders = definitionNames
+    .map((definitionName) =>
+      ajvCompileDecoderTemplate
+        .replace(/\$DecoderName/g, createDecoderName(definitionName))
+        .replace(/\$Class/g, definitionName)
+        .trim()
+    )
+    .join("\n");
+
+  const rawDecoderOutput = ajvCompileDecodersTemplate
+    .replace(/\$ModelImports/g, definitionNames.join(", "))
+    .replace(/\$PackageName/g, packageName)
+    .replace(/\$Decoders/g, decoders);
+
+  const decoderOutput = format(rawDecoderOutput, prettierOptions);
+
+  const helpers = helpersOutput(prettierOptions);
+
+  outDirs.forEach((outDir) => {
+    mkdirSync(outDir, { recursive: true });
+
+    writeFileSync(path.join(outDir, `helpers.ts`), helpers);
+    writeFileSync(path.join(outDir, `decoders.ts`), decoderOutput);
   });
 }
 

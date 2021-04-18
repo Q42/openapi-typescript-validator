@@ -25,8 +25,16 @@ export interface GenerateOptions {
   decoders?: string[];
 
   /**
+   * Generates all validators up front.
+   * Read more about it at the AJV 7 upgrade: https://openjsf.org/blog/2021/02/11/project-news-ajv-version-7-big-changes-and-improvements/
+   * @default false
+   */
+  standalone?: boolean;
+
+  /**
    * Merge decoders into a single file
    * This will reduce the build size, but might increase the time it takes to treeshake the bundle
+   * Only works for standalone builds
    */
   mergeDecoders?: boolean;
 

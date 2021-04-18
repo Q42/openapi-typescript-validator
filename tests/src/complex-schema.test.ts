@@ -1,6 +1,6 @@
 import path from "path";
 import fs from "fs";
-const { generate } = require("openapi-typescript-validator");
+import { generate } from "openapi-typescript-validator";
 
 describe("complex-schema", () => {
   const name = "complex";
@@ -13,6 +13,7 @@ describe("complex-schema", () => {
       schemaType: "json",
       name,
       directory: generatedDir,
+      standalone: true,
     });
   });
 

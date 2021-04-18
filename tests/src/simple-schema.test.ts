@@ -13,6 +13,7 @@ describe("simple-schema", () => {
       schemaType: "yaml",
       name,
       directory: generatedDir,
+      standalone: true,
     });
   });
 
