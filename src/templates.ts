@@ -1,32 +1,61 @@
-export const decodersTemplate = `
+export const ajvCompileDecodersTemplate = `
 /* eslint-disable */
-/* tslint-disable */
-import Ajv, { ErrorObject } from 'ajv';
-import schema from './$SchemaName-schema.json';
-import * as types from './$SchemaName-models'
 
-// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-// !!! AUTO GENERATED CODE, DON'T TOUCH !!!
-// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+import Ajv from 'ajv';
+
+import { validateJson, Decoder } from './helpers';
+import { $ModelImports } from './models';
+import jsonSchema from './schema.json';
 
 const ajv = new Ajv({ strict: false });
-ajv.addSchema(schema);
+ajv.compile(jsonSchema);
 
-function validateJson(json: any, schemaRef: string, definitionName: string): any {
-  const schema = ajv.getSchema(schemaRef);
-  if (!schema) {
-    throw new Error(\`Schema \${schemaRef} not found\`);
+// Decoders
+$Decoders
+`;
+
+
+export const ajvCompileDecoderTemplate = `
+export const $DecoderName: Decoder<$Class> = {
+  definitionName: '$Class',
+  schemaRef: '#/definitions/$Class',
+
+  decode(json: unknown): $Class {
+    const schema = ajv.getSchema($DecoderName.schemaRef);
+    if (!schema) {
+      throw new Error(\`Schema \${$DecoderName.definitionName} not found\`);
+    }
+    return validateJson(json, schema, $DecoderName.definitionName);
   }
+}
+`;
 
+
+export const validationHelperTemplate = `
+/* eslint-disable */
+import type { ErrorObject } from 'ajv';
+
+export interface Decoder<T> {
+  definitionName: string;
+  schemaRef: string;
+  decode: (json: unknown) => T;
+}
+
+export interface Validator {
+  (json: unknown): boolean;
+  errors?: ErrorObject[] | null;
+}
+
+export function validateJson(json: any, validator: Validator, definitionName: string): any {
   const jsonObject = typeof json === 'string' ? JSON.parse(json) : json;
 
-  if (schema(jsonObject)) {
+  if (validator(jsonObject)) {
     return jsonObject;
   }
 
   const jsonPreviewStr = (typeof json === 'string' ? json : JSON.stringify(jsonObject)).substring(0, 200);
-  if (schema.errors) {
-    throw Error(\`\${definitionName} \${errorsText(schema.errors)}. JSON-preview: \${jsonPreviewStr}\`);
+  if (validator.errors) {
+    throw Error(\`\${definitionName} \${errorsText(validator.errors)}. JSON: \${jsonPreviewStr}\`);
   }
 
   throw Error(\`\${definitionName} Unexpected data received. JSON: \${jsonPreviewStr}\`);
@@ -35,24 +64,72 @@ function validateJson(json: any, schemaRef: string, definitionName: string): any
 function errorsText(errors: ErrorObject[]): string {
   return errors.map(error => \`\${error.instancePath}: \${error.message}\`).join('\\n')
 }
-
-// Decoders
-$Decoders
 `;
 
 export const decoderTemplate = `
-export class $DecoderName {
-  public static definitionName: string = '$Class';
-  public static schemaRef: string = '#/definitions/$Class';
+export const $DecoderName: Decoder<$Class> = {
+  definitionName: '$Class',
+  schemaRef: '#/definitions/$Class',
 
-  public static decode(json: any): types.$Class {
-    return validateJson(json, $DecoderName.schemaRef, $DecoderName.definitionName);
+  decode(json: unknown): $Class {
+    return validateJson(json, $ValidatorName as Validator, $DecoderName.definitionName);
   }
 }
 `;
+
+export const decodersMergedFileTemplate = `
+/* eslint-disable */
+
+import { validateJson, Validator, Decoder } from './helpers';
+import { $ModelImports } from './models';
+import { $ValidatorImports } from './validators';
+
+$Decoders
+`;
+
+export const decoderSingleFileTemplate = `
+/* eslint-disable */
+
+import { validateJson, Validator, Decoder } from '../helpers';
+import { $Class } from '../../models';
+import { $ValidatorName } from './validator';
+
+${decoderTemplate}
+`;
+
+export const decodersIndexTemplate = `
+/* eslint-disable */
+
+$Exports
+`
 
 export const modelsTemplate = `
 /* eslint-disable */
 
 $Models
+`;
+
+export const validatorsTemplate = `
+/* eslint-disable */
+
+$Validators
+`;
+
+export const metaTemplate = `
+/* eslint-disable */
+import { $ModelImports } from './models';
+
+export const schemaDefinitions = {
+  $Definitions
+}
+
+export interface SchemaInfo<T> {
+  definitionName: string;
+}
+
+function info<T>(definitionName: string): SchemaInfo<T> {
+  return {
+    definitionName
+  }
+}
 `;

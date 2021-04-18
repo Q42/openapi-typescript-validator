@@ -1,0 +1,242 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`simple-schema decoders UserDecoder decoder 1`] = `
+"/* eslint-disable */
+
+import { validateJson, Validator, Decoder } from \\"../helpers\\";
+import { User } from \\"../../models\\";
+import { UserValidator } from \\"./validator\\";
+
+export const UserDecoder: Decoder<User> = {
+  definitionName: \\"User\\",
+  schemaRef: \\"#/definitions/User\\",
+
+  decode(json: unknown): User {
+    return validateJson(
+      json,
+      UserValidator as Validator,
+      UserDecoder.definitionName
+    );
+  },
+};
+"
+`;
+
+exports[`simple-schema decoders UserDecoder validator.d.ts 1`] = `
+"export function UserValidator(json: unknown): boolean;
+"
+`;
+
+exports[`simple-schema decoders UserDecoder validator.js 1`] = `
+"/* eslint-disable */
+
+\\"use strict\\";
+export const UserValidator = validate11;
+const schema12 = {
+  type: \\"object\\",
+  properties: { id: { type: \\"string\\" }, name: { type: \\"string\\" } },
+  required: [\\"id\\"],
+  $schema: \\"http://json-schema.org/draft-04/schema#\\",
+};
+function validate11(
+  data,
+  { instancePath = \\"\\", parentData, parentDataProperty, rootData = data } = {}
+) {
+  let vErrors = null;
+  let errors = 0;
+  if (errors === 0) {
+    if (data && typeof data == \\"object\\" && !Array.isArray(data)) {
+      let missing0;
+      if (data.id === undefined && (missing0 = \\"id\\")) {
+        validate11.errors = [
+          {
+            instancePath,
+            schemaPath: \\"#/required\\",
+            keyword: \\"required\\",
+            params: { missingProperty: missing0 },
+            message: \\"must have required property '\\" + missing0 + \\"'\\",
+          },
+        ];
+        return false;
+      } else {
+        if (data.id !== undefined) {
+          const _errs1 = errors;
+          if (typeof data.id !== \\"string\\") {
+            validate11.errors = [
+              {
+                instancePath: instancePath + \\"/id\\",
+                schemaPath: \\"#/properties/id/type\\",
+                keyword: \\"type\\",
+                params: { type: \\"string\\" },
+                message: \\"must be string\\",
+              },
+            ];
+            return false;
+          }
+          var valid0 = _errs1 === errors;
+        } else {
+          var valid0 = true;
+        }
+        if (valid0) {
+          if (data.name !== undefined) {
+            const _errs3 = errors;
+            if (typeof data.name !== \\"string\\") {
+              validate11.errors = [
+                {
+                  instancePath: instancePath + \\"/name\\",
+                  schemaPath: \\"#/properties/name/type\\",
+                  keyword: \\"type\\",
+                  params: { type: \\"string\\" },
+                  message: \\"must be string\\",
+                },
+              ];
+              return false;
+            }
+            var valid0 = _errs3 === errors;
+          } else {
+            var valid0 = true;
+          }
+        }
+      }
+    } else {
+      validate11.errors = [
+        {
+          instancePath,
+          schemaPath: \\"#/type\\",
+          keyword: \\"type\\",
+          params: { type: \\"object\\" },
+          message: \\"must be object\\",
+        },
+      ];
+      return false;
+    }
+  }
+  validate11.errors = vErrors;
+  return errors === 0;
+}
+"
+`;
+
+exports[`simple-schema decoders helpers.ts 1`] = `
+"/* eslint-disable */
+import type { ErrorObject } from \\"ajv\\";
+
+export interface Decoder<T> {
+  definitionName: string;
+  schemaRef: string;
+  decode: (json: unknown) => T;
+}
+
+export interface Validator {
+  (json: unknown): boolean;
+  errors?: ErrorObject[] | null;
+}
+
+export function validateJson(
+  json: any,
+  validator: Validator,
+  definitionName: string
+): any {
+  const jsonObject = typeof json === \\"string\\" ? JSON.parse(json) : json;
+
+  if (validator(jsonObject)) {
+    return jsonObject;
+  }
+
+  const jsonPreviewStr = (typeof json === \\"string\\"
+    ? json
+    : JSON.stringify(jsonObject)
+  ).substring(0, 200);
+  if (validator.errors) {
+    throw Error(
+      \`\${definitionName} \${errorsText(
+        validator.errors
+      )}. JSON: \${jsonPreviewStr}\`
+    );
+  }
+
+  throw Error(
+    \`\${definitionName} Unexpected data received. JSON: \${jsonPreviewStr}\`
+  );
+}
+
+function errorsText(errors: ErrorObject[]): string {
+  return errors
+    .map((error) => \`\${error.instancePath}: \${error.message}\`)
+    .join(\\"\\\\n\\");
+}
+"
+`;
+
+exports[`simple-schema decoders index.ts 1`] = `
+"/* eslint-disable */
+
+export { UserDecoder } from \\"./User/decoder\\";
+"
+`;
+
+exports[`simple-schema meta.ts 1`] = `
+"/* eslint-disable */
+import { User } from \\"./models\\";
+
+export const schemaDefinitions = {
+  User: info<User>(\\"User\\"),
+};
+
+export interface SchemaInfo<T> {
+  definitionName: string;
+}
+
+function info<T>(definitionName: string): SchemaInfo<T> {
+  return {
+    definitionName,
+  };
+}
+"
+`;
+
+exports[`simple-schema models should match 1`] = `
+"/* eslint-disable */
+
+/* tslint:disable */
+/**
+ * This file was automatically generated by json-schema-to-typescript.
+ * DO NOT MODIFY IT BY HAND. Instead, modify the source JSONSchema file,
+ * and run json-schema-to-typescript to regenerate this file.
+ */
+
+export interface User {
+  id: string;
+  name?: string;
+}
+"
+`;
+
+exports[`simple-schema schema should match 1`] = `
+"{
+  \\"type\\": \\"object\\",
+  \\"title\\": \\"Schema\\",
+  \\"definitions\\": {
+    \\"User\\": {
+      \\"type\\": \\"object\\",
+      \\"properties\\": {
+        \\"id\\": {
+          \\"type\\": \\"string\\"
+        },
+        \\"name\\": {
+          \\"type\\": \\"string\\"
+        }
+      },
+      \\"required\\": [
+        \\"id\\"
+      ],
+      \\"$schema\\": \\"http://json-schema.org/draft-04/schema#\\"
+    }
+  },
+  \\"properties\\": {
+    \\"User\\": {
+      \\"$ref\\": \\"#/definitions/User\\"
+    }
+  }
+}"
+`;

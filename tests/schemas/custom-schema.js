@@ -1,4 +1,4 @@
-const { anyOf, array, constant, nillable, object, string } = require('openapi-typescript-validator');
+const { anyOf, array, constant, nillable, object, string, ref } = require('openapi-typescript-validator');
 
 const types = {};
 
@@ -12,11 +12,20 @@ types.TitleComponent = object({
   type: constant('title'),
   title: string,
   subtitle: nillable(string),
+  meta: ref('Meta'),
 });
 
 types.ImageComponent = object({
   type: constant('image'),
   url: string,
+  meta: ref('Meta'),
 });
 
-module.exports = { types }
+types.Meta = object({
+  dateTime: string,
+})
+
+module.exports = {
+  types,
+  decoders: ['Screen', 'ImageComponent']
+}

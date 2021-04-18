@@ -1,0 +1,19 @@
+name: Tests CI
+on: push
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup NodeJS
+        uses: actions/setup-node@v1
+        with:
+          node-version: '12.x'
+      - name: Install modules
+        run: npm install
+      - name: Build
+        run: npm run build
+      - name: Install Test modules
+        run: (cd tests && npm install)
+      - name: Run tests
+        run: npm test
