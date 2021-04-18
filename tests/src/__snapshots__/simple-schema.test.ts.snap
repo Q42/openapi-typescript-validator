@@ -180,14 +180,15 @@ exports[`simple-schema meta.ts 1`] = `
 import { User } from \\"./models\\";
 
 export const schemaDefinitions = {
-  User: info<User>(\\"User\\"),
+  User: info<User>(\\"User\\", \\"#/definitions/User\\"),
 };
 
 export interface SchemaInfo<T> {
   definitionName: string;
+  schemaRef: string;
 }
 
-function info<T>(definitionName: string): SchemaInfo<T> {
+function info<T>(definitionName: string, schemaRef: string): SchemaInfo<T> {
   return {
     definitionName,
   };

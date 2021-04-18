@@ -11,7 +11,7 @@ export function generateMetaFile(
 ): void {
   const metas = definitionNames
     .map((definitionName) => {
-      return `${definitionName}: info<${definitionName}>('${definitionName}'),`;
+      return `${definitionName}: info<${definitionName}>('${definitionName}', '#/definitions/${definitionName}'),`;
     })
     .join("\n");
 

@@ -125,9 +125,10 @@ export const schemaDefinitions = {
 
 export interface SchemaInfo<T> {
   definitionName: string;
+  schemaRef: string;
 }
 
-function info<T>(definitionName: string): SchemaInfo<T> {
+function info<T>(definitionName: string, schemaRef: string): SchemaInfo<T> {
   return {
     definitionName
   }
