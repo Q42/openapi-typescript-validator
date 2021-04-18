@@ -129,8 +129,6 @@ export interface SchemaInfo<T> {
 }
 
 function info<T>(definitionName: string, schemaRef: string): SchemaInfo<T> {
-  return {
-    definitionName
-  }
+  return { definitionName, schemaRef };
 }
 `;
