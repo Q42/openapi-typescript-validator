@@ -236,7 +236,15 @@ exports[`custom-schema - ajv compile schema should match 1`] = `
 }"
 `;
 
-exports[`custom-schema - merged decoders 1`] = `
+exports[`custom-schema - standalone ES6 decoders index.ts 1`] = `
+"/* eslint-disable */
+
+export { ScreenDecoder } from \\"./Screen/decoder\\";
+export { ImageComponentDecoder } from \\"./ImageComponent/decoder\\";
+"
+`;
+
+exports[`custom-schema - standalone ES6 merged decoders 1`] = `
 "/* eslint-disable */
 
 import { validateJson, Validator, Decoder } from \\"./helpers\\";
@@ -270,7 +278,7 @@ export const ImageComponentDecoder: Decoder<ImageComponent> = {
 "
 `;
 
-exports[`custom-schema - merged helpers.ts 1`] = `
+exports[`custom-schema - standalone ES6 merged helpers.ts 1`] = `
 "/* eslint-disable */
 import type { ErrorObject } from \\"ajv\\";
 
@@ -321,7 +329,7 @@ function errorsText(errors: ErrorObject[]): string {
 "
 `;
 
-exports[`custom-schema - merged models should match 1`] = `
+exports[`custom-schema - standalone ES6 merged models should match 1`] = `
 "/* eslint-disable */
 
 /* tslint:disable */
@@ -353,7 +361,7 @@ export interface ImageComponent {
 "
 `;
 
-exports[`custom-schema - merged schema should match 1`] = `
+exports[`custom-schema - standalone ES6 merged schema should match 1`] = `
 "{
   \\"type\\": \\"object\\",
   \\"title\\": \\"Schema\\",
@@ -464,21 +472,13 @@ exports[`custom-schema - merged schema should match 1`] = `
 }"
 `;
 
-exports[`custom-schema - merged validators.d.ts 1`] = `
+exports[`custom-schema - standalone ES6 merged validators.d.ts 1`] = `
 "export function ScreenValidator(json: unknown): boolean;
 export function ImageComponentValidator(json: unknown): boolean;
 "
 `;
 
-exports[`custom-schema decoders index.ts 1`] = `
-"/* eslint-disable */
-
-export { ScreenDecoder } from \\"./Screen/decoder\\";
-export { ImageComponentDecoder } from \\"./ImageComponent/decoder\\";
-"
-`;
-
-exports[`custom-schema models should match 1`] = `
+exports[`custom-schema - standalone ES6 models should match 1`] = `
 "/* eslint-disable */
 
 /* tslint:disable */
@@ -510,7 +510,459 @@ export interface ImageComponent {
 "
 `;
 
-exports[`custom-schema schema should match 1`] = `
+exports[`custom-schema - standalone ES6 schema should match 1`] = `
+"{
+  \\"type\\": \\"object\\",
+  \\"title\\": \\"Schema\\",
+  \\"definitions\\": {
+    \\"Screen\\": {
+      \\"type\\": \\"object\\",
+      \\"properties\\": {
+        \\"components\\": {
+          \\"type\\": \\"array\\",
+          \\"items\\": {
+            \\"$ref\\": \\"#/definitions/Component\\"
+          }
+        }
+      },
+      \\"required\\": [
+        \\"components\\"
+      ]
+    },
+    \\"Component\\": {
+      \\"anyOf\\": [
+        {
+          \\"$ref\\": \\"#/definitions/TitleComponent\\"
+        },
+        {
+          \\"$ref\\": \\"#/definitions/ImageComponent\\"
+        }
+      ]
+    },
+    \\"TitleComponent\\": {
+      \\"type\\": \\"object\\",
+      \\"properties\\": {
+        \\"type\\": {
+          \\"type\\": \\"string\\",
+          \\"enum\\": [
+            \\"title\\"
+          ]
+        },
+        \\"title\\": {
+          \\"type\\": \\"string\\"
+        },
+        \\"subtitle\\": {
+          \\"type\\": [
+            \\"string\\",
+            \\"null\\"
+          ]
+        },
+        \\"meta\\": {
+          \\"$ref\\": \\"#/definitions/Meta\\"
+        }
+      },
+      \\"required\\": [
+        \\"type\\",
+        \\"title\\",
+        \\"meta\\"
+      ]
+    },
+    \\"ImageComponent\\": {
+      \\"type\\": \\"object\\",
+      \\"properties\\": {
+        \\"type\\": {
+          \\"type\\": \\"string\\",
+          \\"enum\\": [
+            \\"image\\"
+          ]
+        },
+        \\"url\\": {
+          \\"type\\": \\"string\\"
+        },
+        \\"meta\\": {
+          \\"$ref\\": \\"#/definitions/Meta\\"
+        }
+      },
+      \\"required\\": [
+        \\"type\\",
+        \\"url\\",
+        \\"meta\\"
+      ]
+    },
+    \\"Meta\\": {
+      \\"type\\": \\"object\\",
+      \\"properties\\": {
+        \\"dateTime\\": {
+          \\"type\\": \\"string\\"
+        }
+      },
+      \\"required\\": [
+        \\"dateTime\\"
+      ]
+    }
+  },
+  \\"properties\\": {
+    \\"Screen\\": {
+      \\"$ref\\": \\"#/definitions/Screen\\"
+    },
+    \\"Component\\": {
+      \\"$ref\\": \\"#/definitions/Component\\"
+    },
+    \\"TitleComponent\\": {
+      \\"$ref\\": \\"#/definitions/TitleComponent\\"
+    },
+    \\"ImageComponent\\": {
+      \\"$ref\\": \\"#/definitions/ImageComponent\\"
+    },
+    \\"Meta\\": {
+      \\"$ref\\": \\"#/definitions/Meta\\"
+    }
+  }
+}"
+`;
+
+exports[`custom-schema - standalone commonjs decoders ImageComponent decoder.ts 1`] = `
+"/* eslint-disable */
+
+import { validateJson, Validator, Decoder } from \\"../../helpers\\";
+import { ImageComponent } from \\"../../models\\";
+const { ImageComponentValidator } = require(\\"./validator\\");
+
+export const ImageComponentDecoder: Decoder<ImageComponent> = {
+  definitionName: \\"ImageComponent\\",
+  schemaRef: \\"#/definitions/ImageComponent\\",
+
+  decode(json: unknown): ImageComponent {
+    return validateJson(
+      json,
+      ImageComponentValidator as Validator,
+      ImageComponentDecoder.definitionName
+    );
+  },
+};
+"
+`;
+
+exports[`custom-schema - standalone commonjs decoders index.ts 1`] = `
+"/* eslint-disable */
+
+export { ScreenDecoder } from \\"./Screen/decoder\\";
+export { ImageComponentDecoder } from \\"./ImageComponent/decoder\\";
+"
+`;
+
+exports[`custom-schema - standalone commonjs helpers.ts 1`] = `
+"/* eslint-disable */
+import type { ErrorObject } from \\"ajv\\";
+
+export interface Decoder<T> {
+  definitionName: string;
+  schemaRef: string;
+  decode: (json: unknown) => T;
+}
+
+export interface Validator {
+  (json: unknown): boolean;
+  errors?: ErrorObject[] | null;
+}
+
+export function validateJson(
+  json: any,
+  validator: Validator,
+  definitionName: string
+): any {
+  const jsonObject = typeof json === \\"string\\" ? JSON.parse(json) : json;
+
+  if (validator(jsonObject)) {
+    return jsonObject;
+  }
+
+  const jsonPreviewStr = (typeof json === \\"string\\"
+    ? json
+    : JSON.stringify(jsonObject)
+  ).substring(0, 200);
+  if (validator.errors) {
+    throw Error(
+      \`\${definitionName} \${errorsText(
+        validator.errors
+      )}. JSON: \${jsonPreviewStr}\`
+    );
+  }
+
+  throw Error(
+    \`\${definitionName} Unexpected data received. JSON: \${jsonPreviewStr}\`
+  );
+}
+
+function errorsText(errors: ErrorObject[]): string {
+  return errors
+    .map((error) => \`\${error.instancePath}: \${error.message}\`)
+    .join(\\"\\\\n\\");
+}
+"
+`;
+
+exports[`custom-schema - standalone commonjs merged decoders 1`] = `
+"/* eslint-disable */
+
+import { validateJson, Validator, Decoder } from \\"./helpers\\";
+import { Screen, ImageComponent } from \\"./models\\";
+const { ScreenValidator, ImageComponentValidator } = require(\\"./validators\\");
+
+export const ScreenDecoder: Decoder<Screen> = {
+  definitionName: \\"Screen\\",
+  schemaRef: \\"#/definitions/Screen\\",
+
+  decode(json: unknown): Screen {
+    return validateJson(
+      json,
+      ScreenValidator as Validator,
+      ScreenDecoder.definitionName
+    );
+  },
+};
+export const ImageComponentDecoder: Decoder<ImageComponent> = {
+  definitionName: \\"ImageComponent\\",
+  schemaRef: \\"#/definitions/ImageComponent\\",
+
+  decode(json: unknown): ImageComponent {
+    return validateJson(
+      json,
+      ImageComponentValidator as Validator,
+      ImageComponentDecoder.definitionName
+    );
+  },
+};
+"
+`;
+
+exports[`custom-schema - standalone commonjs merged helpers.ts 1`] = `
+"/* eslint-disable */
+import type { ErrorObject } from \\"ajv\\";
+
+export interface Decoder<T> {
+  definitionName: string;
+  schemaRef: string;
+  decode: (json: unknown) => T;
+}
+
+export interface Validator {
+  (json: unknown): boolean;
+  errors?: ErrorObject[] | null;
+}
+
+export function validateJson(
+  json: any,
+  validator: Validator,
+  definitionName: string
+): any {
+  const jsonObject = typeof json === \\"string\\" ? JSON.parse(json) : json;
+
+  if (validator(jsonObject)) {
+    return jsonObject;
+  }
+
+  const jsonPreviewStr = (typeof json === \\"string\\"
+    ? json
+    : JSON.stringify(jsonObject)
+  ).substring(0, 200);
+  if (validator.errors) {
+    throw Error(
+      \`\${definitionName} \${errorsText(
+        validator.errors
+      )}. JSON: \${jsonPreviewStr}\`
+    );
+  }
+
+  throw Error(
+    \`\${definitionName} Unexpected data received. JSON: \${jsonPreviewStr}\`
+  );
+}
+
+function errorsText(errors: ErrorObject[]): string {
+  return errors
+    .map((error) => \`\${error.instancePath}: \${error.message}\`)
+    .join(\\"\\\\n\\");
+}
+"
+`;
+
+exports[`custom-schema - standalone commonjs merged models should match 1`] = `
+"/* eslint-disable */
+
+/* tslint:disable */
+/**
+ * This file was automatically generated by json-schema-to-typescript.
+ * DO NOT MODIFY IT BY HAND. Instead, modify the source JSONSchema file,
+ * and run json-schema-to-typescript to regenerate this file.
+ */
+
+export type Component = TitleComponent | ImageComponent;
+
+export interface Screen {
+  components: Component[];
+}
+export interface TitleComponent {
+  type: \\"title\\";
+  title: string;
+  subtitle?: string | null;
+  meta: Meta;
+}
+export interface Meta {
+  dateTime: string;
+}
+export interface ImageComponent {
+  type: \\"image\\";
+  url: string;
+  meta: Meta;
+}
+"
+`;
+
+exports[`custom-schema - standalone commonjs merged schema should match 1`] = `
+"{
+  \\"type\\": \\"object\\",
+  \\"title\\": \\"Schema\\",
+  \\"definitions\\": {
+    \\"Screen\\": {
+      \\"type\\": \\"object\\",
+      \\"properties\\": {
+        \\"components\\": {
+          \\"type\\": \\"array\\",
+          \\"items\\": {
+            \\"$ref\\": \\"#/definitions/Component\\"
+          }
+        }
+      },
+      \\"required\\": [
+        \\"components\\"
+      ]
+    },
+    \\"Component\\": {
+      \\"anyOf\\": [
+        {
+          \\"$ref\\": \\"#/definitions/TitleComponent\\"
+        },
+        {
+          \\"$ref\\": \\"#/definitions/ImageComponent\\"
+        }
+      ]
+    },
+    \\"TitleComponent\\": {
+      \\"type\\": \\"object\\",
+      \\"properties\\": {
+        \\"type\\": {
+          \\"type\\": \\"string\\",
+          \\"enum\\": [
+            \\"title\\"
+          ]
+        },
+        \\"title\\": {
+          \\"type\\": \\"string\\"
+        },
+        \\"subtitle\\": {
+          \\"type\\": [
+            \\"string\\",
+            \\"null\\"
+          ]
+        },
+        \\"meta\\": {
+          \\"$ref\\": \\"#/definitions/Meta\\"
+        }
+      },
+      \\"required\\": [
+        \\"type\\",
+        \\"title\\",
+        \\"meta\\"
+      ]
+    },
+    \\"ImageComponent\\": {
+      \\"type\\": \\"object\\",
+      \\"properties\\": {
+        \\"type\\": {
+          \\"type\\": \\"string\\",
+          \\"enum\\": [
+            \\"image\\"
+          ]
+        },
+        \\"url\\": {
+          \\"type\\": \\"string\\"
+        },
+        \\"meta\\": {
+          \\"$ref\\": \\"#/definitions/Meta\\"
+        }
+      },
+      \\"required\\": [
+        \\"type\\",
+        \\"url\\",
+        \\"meta\\"
+      ]
+    },
+    \\"Meta\\": {
+      \\"type\\": \\"object\\",
+      \\"properties\\": {
+        \\"dateTime\\": {
+          \\"type\\": \\"string\\"
+        }
+      },
+      \\"required\\": [
+        \\"dateTime\\"
+      ]
+    }
+  },
+  \\"properties\\": {
+    \\"Screen\\": {
+      \\"$ref\\": \\"#/definitions/Screen\\"
+    },
+    \\"Component\\": {
+      \\"$ref\\": \\"#/definitions/Component\\"
+    },
+    \\"TitleComponent\\": {
+      \\"$ref\\": \\"#/definitions/TitleComponent\\"
+    },
+    \\"ImageComponent\\": {
+      \\"$ref\\": \\"#/definitions/ImageComponent\\"
+    },
+    \\"Meta\\": {
+      \\"$ref\\": \\"#/definitions/Meta\\"
+    }
+  }
+}"
+`;
+
+exports[`custom-schema - standalone commonjs models should match 1`] = `
+"/* eslint-disable */
+
+/* tslint:disable */
+/**
+ * This file was automatically generated by json-schema-to-typescript.
+ * DO NOT MODIFY IT BY HAND. Instead, modify the source JSONSchema file,
+ * and run json-schema-to-typescript to regenerate this file.
+ */
+
+export type Component = TitleComponent | ImageComponent;
+
+export interface Screen {
+  components: Component[];
+}
+export interface TitleComponent {
+  type: \\"title\\";
+  title: string;
+  subtitle?: string | null;
+  meta: Meta;
+}
+export interface Meta {
+  dateTime: string;
+}
+export interface ImageComponent {
+  type: \\"image\\";
+  url: string;
+  meta: Meta;
+}
+"
+`;
+
+exports[`custom-schema - standalone commonjs schema should match 1`] = `
 "{
   \\"type\\": \\"object\\",
   \\"title\\": \\"Schema\\",

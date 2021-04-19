@@ -1,5 +1,21 @@
-import { Options } from 'prettier';
-import { SchemaType } from './parse-schema';
+import { Options } from "prettier";
+import { SchemaType } from "./parse-schema";
+
+export type ValidatorOutput = "module" | "commonjs";
+
+export interface StandaloneOptions {
+  /**
+   * Merge decoders into a single file
+   * This will reduce the build size, but might increase the time it takes to treeshake the bundle
+   * Only works for standalone builds
+   */
+  mergeDecoders?: boolean;
+
+  /**
+   * JS format of the validators We can't generate TS yet. Ajv doesn't support it.
+   */
+  validatorOutput: ValidatorOutput;
+}
 
 export interface GenerateOptions {
   /** file location of the schema */
@@ -27,16 +43,9 @@ export interface GenerateOptions {
   /**
    * Generates all validators up front.
    * Read more about it at the AJV 7 upgrade: https://openjsf.org/blog/2021/02/11/project-news-ajv-version-7-big-changes-and-improvements/
-   * @default false
+   * @default undefined
    */
-  standalone?: boolean;
-
-  /**
-   * Merge decoders into a single file
-   * This will reduce the build size, but might increase the time it takes to treeshake the bundle
-   * Only works for standalone builds
-   */
-  mergeDecoders?: boolean;
+  standalone?: StandaloneOptions;
 
   /**
    * don't output the meta file

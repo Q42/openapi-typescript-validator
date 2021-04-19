@@ -13,7 +13,9 @@ describe("complex-schema", () => {
       schemaType: "json",
       name,
       directory: generatedDir,
-      standalone: true,
+      standalone: {
+        validatorOutput: 'module',
+      },
     });
   });
 
@@ -35,7 +37,6 @@ describe("complex-schema", () => {
         "ImageComponent",
         "Screen",
         "TitleComponent",
-        "helpers.ts",
         "index.ts",
       ]);
     });

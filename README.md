@@ -204,18 +204,4 @@ and run `node generate-schemas.js`
 ## Documentation
 
 ### generate
-`generate` can be called with `GenerateOptions`
-
-param | required | description | default
------ | -------- | ----------- | -------
-`schemaFile` | true | file location of the schema. |
-`schemaType` | true | `yaml`, `json` or `custom` |
-`name` | true | prefix for the generated files |
-`directory` | true | `string` or `string[]` location(s) where the output files will be stored. |
-`prettierOptions` | false | See [Prettier Options](https://prettier.io/docs/en/options.html) | prettier typescript options
-`decoders` | false | `string[]` list of definitions to generate decoders for | generates decoder for every element. With `schemaType: 'custom`, it's possible to also return an `decoders: string[]`
-`mergeDecoders` | false | Merge decoders into a single file. This will reduce the bundle size, but might increase the time it takes to treeshake the bundle | `false`
-`skipMetaFile` | false | don't output the meta file | `false`
-`skipSchemaFile` | false | don't output the schema file | `false`
-`skipDecoders` | false | don't output the decoder files | `false`
-`standalone` | false | generates all validators up front. Read more about at the [AJV 7 update](https://openjsf.org/blog/2021/02/11/project-news-ajv-version-7-big-changes-and-improvements/) at `Code generation performance` | `false`
+`generate` can be called with [GenerateOptions](src/GenerateOptions.ts). See the file for more info.

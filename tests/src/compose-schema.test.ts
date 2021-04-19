@@ -14,7 +14,9 @@ describe("compose-schema", () => {
       name,
       directory: generatedDir,
       decoders: ['BarComponent', 'FooComponent', 'notfound'],
-      standalone: true,
+      standalone: {
+        validatorOutput: 'module',
+      },
     });
   });
 
@@ -27,6 +29,17 @@ describe("compose-schema", () => {
     expect(file).toMatchSnapshot();
   });
 
+  test("files should match", () => {
+    const files = fs.readdirSync(generatedDir);
+    expect(files).toEqual([
+      "decoders",
+      "helpers.ts",
+      "meta.ts",
+      "models.ts",
+      "schema.json",
+    ]);
+  });
+
   describe("decoders", () => {
     const decodersDir = path.join(generatedDir, `decoders`);
 
@@ -35,7 +48,6 @@ describe("compose-schema", () => {
       expect(dir).toEqual([
         "BarComponent",
         "FooComponent",
-        "helpers.ts",
         "index.ts",
       ]);
     });

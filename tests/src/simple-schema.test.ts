@@ -1,6 +1,6 @@
 import path from "path";
 import fs from "fs";
-const { generate } = require("openapi-typescript-validator");
+import { generate } from "openapi-typescript-validator";
 
 describe("simple-schema", () => {
   const name = "simple";
@@ -13,7 +13,9 @@ describe("simple-schema", () => {
       schemaType: "yaml",
       name,
       directory: generatedDir,
-      standalone: true,
+      standalone: {
+        validatorOutput: 'module',
+      }
     });
   });
 
@@ -35,21 +37,21 @@ describe("simple-schema", () => {
     expect(file).toMatchSnapshot();
   });
 
+  test('helpers.ts', () => {
+    const file = fs.readFileSync(
+      path.join(generatedDir, `helpers.ts`),
+      "utf8"
+    );
+    expect(file).toMatchSnapshot();
+  })
+
   describe("decoders", () => {
     const decodersDir = path.join(generatedDir, `decoders`);
 
     test("file structure", () => {
       const dir = fs.readdirSync(decodersDir);
-      expect(dir).toEqual(["User", "helpers.ts", "index.ts"]);
+      expect(dir).toEqual(["User", "index.ts"]);
     });
-
-    test('helpers.ts', () => {
-      const file = fs.readFileSync(
-        path.join(decodersDir, `helpers.ts`),
-        "utf8"
-      );
-      expect(file).toMatchSnapshot();
-    })
 
     test('index.ts', () => {
       const file = fs.readFileSync(
