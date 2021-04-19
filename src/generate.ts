@@ -16,6 +16,7 @@ import {
 export async function generate(options: GenerateOptions) {
   const { name, schemaFile, schemaType } = options;
   const prettierOptions = options.prettierOptions ?? { parser: "typescript" };
+
   const directories: string[] =
     typeof options.directory === "string"
       ? [options.directory]
@@ -59,10 +60,11 @@ export async function generate(options: GenerateOptions) {
         directories,
         prettierOptions
       );
-    } else if (options.mergeDecoders === true) {
+    } else if (options.standalone.mergeDecoders === true) {
       generateStandaloneMergedDecoders(
         definitionNames,
         schema,
+        options.standalone.validatorOutput,
         name,
         directories,
         prettierOptions
@@ -71,6 +73,7 @@ export async function generate(options: GenerateOptions) {
       generateStandaloneDecoders(
         definitionNames,
         schema,
+        options.standalone.validatorOutput,
         name,
         directories,
         prettierOptions

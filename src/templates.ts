@@ -82,7 +82,7 @@ export const decodersMergedFileTemplate = `
 
 import { validateJson, Validator, Decoder } from './helpers';
 import { $ModelImports } from './models';
-import { $ValidatorImports } from './validators';
+$ValidatorImports
 
 $Decoders
 `;
@@ -90,9 +90,9 @@ $Decoders
 export const decoderSingleFileTemplate = `
 /* eslint-disable */
 
-import { validateJson, Validator, Decoder } from '../helpers';
+import { validateJson, Validator, Decoder } from '../../helpers';
 import { $Class } from '../../models';
-import { $ValidatorName } from './validator';
+$ValidatorImports
 
 ${decoderTemplate}
 `;

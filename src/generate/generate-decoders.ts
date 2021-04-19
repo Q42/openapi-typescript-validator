@@ -14,10 +14,12 @@ import {
 import standaloneCode from "ajv/dist/standalone";
 import { mkdirSync, writeFileSync } from "fs";
 import * as path from "path";
+import { ValidatorOutput } from '../GenerateOptions';
 
 export function generateStandaloneDecoders(
   definitionNames: string[],
   schema: ParsedSchema,
+  output: ValidatorOutput,
   packageName: string,
   outDirs: string[],
   prettierOptions: Options
@@ -31,15 +33,21 @@ export function generateStandaloneDecoders(
     const validatorsOutput = standAloneValidatorOutput(
       schema,
       [definitionName],
+      output,
       prettierOptions
     );
 
-    const rawDecoderOutput = decoderSingleFileTemplate
+    const validatorImportStatement =
+      output === "module"
+        ? `import { ${validatorName} } from './validator'`
+        : `const { ${validatorName} } = require("./validator")`;
+
+    let rawDecoderOutput = decoderSingleFileTemplate
       .replace(/\$DecoderName/g, decoderName)
       .replace(/\$Class/g, definitionName)
+      .replace(/\$ValidatorImports/g, validatorImportStatement)
       .replace(/\$ValidatorName/g, validatorName)
-      .replace(/\$PackageName/g, packageName)
-      .trim();
+      .replace(/\$PackageName/g, packageName);
 
     const decoderOutput = format(rawDecoderOutput, prettierOptions);
 
@@ -58,10 +66,13 @@ export function generateStandaloneDecoders(
 
       writeFileSync(path.join(decoderDir, `decoder.ts`), decoderOutput);
       writeFileSync(path.join(decoderDir, `validator.js`), validatorsOutput);
-      writeFileSync(
-        path.join(decoderDir, `validator.d.ts`),
-        validatorDefinitions
-      );
+
+      if (output === 'module') {
+        writeFileSync(
+          path.join(decoderDir, `validator.d.ts`),
+          validatorDefinitions
+        );
+      }
     });
   });
 
@@ -78,7 +89,7 @@ export function generateStandaloneDecoders(
     const decoderDir = path.join(outDir, "decoders");
     mkdirSync(decoderDir, { recursive: true });
 
-    writeFileSync(path.join(decoderDir, `helpers.ts`), helpers);
+    writeFileSync(path.join(outDir, `helpers.ts`), helpers);
     writeFileSync(path.join(decoderDir, `index.ts`), indexOutput);
   });
 }
@@ -86,6 +97,7 @@ export function generateStandaloneDecoders(
 export function generateStandaloneMergedDecoders(
   definitionNames: string[],
   schema: ParsedSchema,
+  output: ValidatorOutput,
   packageName: string,
   outDirs: string[],
   prettierOptions: Options
@@ -100,11 +112,17 @@ export function generateStandaloneMergedDecoders(
     )
     .join("\n");
 
+  const validatorImports = definitionNames
+    .map((d) => createValidatorName(d))
+    .join(", ");
+
+  const validatorImportStatement =
+    output === "module"
+      ? `import { ${validatorImports} } from './validators';`
+      : `const { ${validatorImports} } = require("./validators")`;
+
   const rawDecoderOutput = decodersMergedFileTemplate
-    .replace(
-      /\$ValidatorImports/g,
-      definitionNames.map((d) => createValidatorName(d)).join(", ")
-    )
+    .replace(/\$ValidatorImports/g, validatorImportStatement)
     .replace(/\$ModelImports/g, definitionNames.join(", "))
     .replace(/\$PackageName/g, packageName)
     .replace(/\$Decoders/g, decoders);
@@ -113,7 +131,7 @@ export function generateStandaloneMergedDecoders(
 
   const rawValidatorsOutput = validatorsTemplate.replace(
     /\$Validators/g,
-    standAloneValidatorOutput(schema, definitionNames, prettierOptions)
+    standAloneValidatorOutput(schema, definitionNames, output, prettierOptions)
   );
 
   const validatorsOutput = format(rawValidatorsOutput, prettierOptions);
@@ -130,7 +148,10 @@ export function generateStandaloneMergedDecoders(
     writeFileSync(path.join(outDir, `helpers.ts`), helpers);
     writeFileSync(path.join(outDir, `decoders.ts`), decoderOutput);
     writeFileSync(path.join(outDir, `validators.js`), validatorsOutput);
-    writeFileSync(path.join(outDir, `validators.d.ts`), validatorDefinitions);
+
+    if (output === 'module') {
+      writeFileSync(path.join(outDir, `validators.d.ts`), validatorDefinitions);
+    }
   });
 }
 
@@ -178,6 +199,7 @@ function createDecoderName(definitionName: string) {
 function standAloneValidatorOutput(
   schema: ParsedSchema,
   definitions: string[],
+  output: ValidatorOutput,
   prettierOptions: Options
 ): string {
   const ajv = new Ajv({ code: { source: true }, strict: false });
@@ -193,10 +215,14 @@ function standAloneValidatorOutput(
     {}
   );
 
-  const jsOutput = standaloneCode(ajv, refs).replace(
-    /exports\.(\w+Validator) = (\w+)/gm,
-    "export const $1 = $2"
-  );
+  let jsOutput = standaloneCode(ajv, refs);
+
+  if (output === "module") {
+    jsOutput = jsOutput.replace(
+      /exports\.(\w+Validator) = (\w+)/gm,
+      "export const $1 = $2"
+    );
+  }
 
   const rawValidatorsOutput = validatorsTemplate.replace(
     /\$Validators/g,

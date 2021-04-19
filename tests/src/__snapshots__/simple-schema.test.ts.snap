@@ -3,7 +3,7 @@
 exports[`simple-schema decoders UserDecoder decoder 1`] = `
 "/* eslint-disable */
 
-import { validateJson, Validator, Decoder } from \\"../helpers\\";
+import { validateJson, Validator, Decoder } from \\"../../helpers\\";
 import { User } from \\"../../models\\";
 import { UserValidator } from \\"./validator\\";
 
@@ -117,7 +117,14 @@ function validate11(
 "
 `;
 
-exports[`simple-schema decoders helpers.ts 1`] = `
+exports[`simple-schema decoders index.ts 1`] = `
+"/* eslint-disable */
+
+export { UserDecoder } from \\"./User/decoder\\";
+"
+`;
+
+exports[`simple-schema helpers.ts 1`] = `
 "/* eslint-disable */
 import type { ErrorObject } from \\"ajv\\";
 
@@ -165,13 +172,6 @@ function errorsText(errors: ErrorObject[]): string {
     .map((error) => \`\${error.instancePath}: \${error.message}\`)
     .join(\\"\\\\n\\");
 }
-"
-`;
-
-exports[`simple-schema decoders index.ts 1`] = `
-"/* eslint-disable */
-
-export { UserDecoder } from \\"./User/decoder\\";
 "
 `;
 
