@@ -1,5 +1,5 @@
 # openapi-typescript-validator
-Generate typescript with ajv validation based on openapi schemas
+Generate typescript with `ajv >= 8.0.0` validation based on openapi schemas
 
 - [What does this do?](#what-does-this-do)
 - [Getting started](#getting-started)
@@ -200,6 +200,14 @@ generate({
 ```
 
 and run `node generate-schemas.js`
+
+**Note**
+We recommened to setup your schema configuration in a different folder than your application. E.g:
+
+- `schemas`
+  - `package.json` which depends on this library
+- `server`
+  - `package.json` with `ajv` depedency and `ajv-formats` (if you use formats)
 
 ## Documentation
 

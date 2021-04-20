@@ -1,3 +1,4 @@
+import { FormatsPluginOptions } from 'ajv-formats';
 import { Options } from "prettier";
 import { SchemaType } from "./parse-schema";
 
@@ -28,6 +29,18 @@ export interface GenerateOptions {
 
   /** location(s) where the output files will be stored. */
   directory: string | string[];
+
+  /**
+   * adds the "ajv-formats" packages
+   * @default false
+  */
+  addFormats?: boolean;
+
+  /**
+   * Options send to add the addFormats
+   * @default undefined
+   */
+  formatOptions?: FormatsPluginOptions;
 
   /**
    * @default prettier typescript options

@@ -1,7 +1,6 @@
 import { format, Options } from "prettier";
-import { metaTemplate } from "../templates";
 import { mkdirSync, writeFileSync } from "fs";
-import * as path from "path";
+import path from "path";
 
 export function generateMetaFile(
   definitionNames: string[],
@@ -24,7 +23,24 @@ export function generateMetaFile(
 
   outDirs.forEach((outDir) => {
     mkdirSync(outDir, { recursive: true });
-
     writeFileSync(path.join(outDir, `meta.ts`), output);
   });
 }
+
+const metaTemplate = `
+/* eslint-disable */
+import { $ModelImports } from './models';
+
+export const schemaDefinitions = {
+  $Definitions
+}
+
+export interface SchemaInfo<T> {
+  definitionName: string;
+  schemaRef: string;
+}
+
+function info<T>(definitionName: string, schemaRef: string): SchemaInfo<T> {
+  return { definitionName, schemaRef };
+}
+`;

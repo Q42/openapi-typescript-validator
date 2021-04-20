@@ -4,13 +4,15 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "pretest": "cd .. && npm run build",
     "test": "jest",
-    "test:watch": "jest test --watch"
+    "test:watch": "npm test -- --watch"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "ajv": "^8.1.0",
+    "ajv-formats": "^2.0.2",
     "jest": "^26.6.3",
     "openapi-typescript-validator": "file:..",
     "ts-jest": "^26.5.5"

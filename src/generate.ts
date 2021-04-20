@@ -1,17 +1,11 @@
-import * as path from "path";
-import { compile } from "json-schema-to-typescript";
 import keyby from "lodash.keyby";
-import { modelsTemplate } from "./templates";
-import { mkdirSync, writeFileSync } from "fs";
-import { format } from "prettier";
 import { parseSchema } from "./parse-schema";
 import { GenerateOptions } from "./GenerateOptions";
 import { generateMetaFile } from "./generate/generate-meta";
-import {
-  generateCompileDecoders,
-  generateStandaloneDecoders,
-  generateStandaloneMergedDecoders,
-} from "./generate/generate-decoders";
+import { generateCompileBasedDecoders } from './generate/generate-compile-decoders';
+import { generateStandaloneDecoders, generateStandaloneMergedDecoders } from './generate/generate-standalone-decoders';
+import { generateHelpers } from './generate/generate-helpers';
+import { generateModels } from './generate/generate-models';
 
 export async function generate(options: GenerateOptions) {
   const { name, schemaFile, schemaType } = options;
@@ -28,17 +22,6 @@ export async function generate(options: GenerateOptions) {
 
   const schema = await parseSchema(schemaFile, schemaType);
 
-  const compiledTypescriptModels = await compile(
-    JSON.parse(schema.json),
-    "Schema"
-  );
-  const rawTypescriptModels = modelsTemplate
-    .replace(/\$Models/g, compiledTypescriptModels)
-    .replace(/\s*\[k: string\]: unknown;/g, "") // Allow additional properties in schema but not in typescript
-    .replace(/export interface Schema \{[^]*?\n\}/, "");
-
-  const typescriptModels = format(rawTypescriptModels, prettierOptions);
-
   const allDefinitions = Object.keys(schema.definitions);
 
   const whistlistedDecoders = options.decoders ?? schema.whitelistedDecoders;
@@ -53,10 +36,10 @@ export async function generate(options: GenerateOptions) {
 
   if (options.skipDecoders !== true) {
     if (!options.standalone) {
-      generateCompileDecoders(
+      generateCompileBasedDecoders(
         definitionNames,
-        schema,
-        name,
+        options.addFormats ?? false,
+        options.formatOptions,
         directories,
         prettierOptions
       );
@@ -64,8 +47,9 @@ export async function generate(options: GenerateOptions) {
       generateStandaloneMergedDecoders(
         definitionNames,
         schema,
+        options.addFormats ?? false,
+        options.formatOptions,
         options.standalone.validatorOutput,
-        name,
         directories,
         prettierOptions
       );
@@ -73,27 +57,21 @@ export async function generate(options: GenerateOptions) {
       generateStandaloneDecoders(
         definitionNames,
         schema,
+        options.addFormats ?? false,
+        options.formatOptions,
         options.standalone.validatorOutput,
-        name,
         directories,
         prettierOptions
       );
     }
   }
 
+  await generateModels(schema, { skipSchemaFile: options.skipSchemaFile }, prettierOptions, directories);
+  generateHelpers(prettierOptions, directories);
+
   if (options.skipMetaFile !== true) {
     generateMetaFile(allDefinitions, name, directories, prettierOptions);
   }
-
-  directories.forEach((directory) => {
-    mkdirSync(directory, { recursive: true });
-
-    writeFileSync(path.join(directory, `models.ts`), typescriptModels);
-
-    if (options.skipSchemaFile !== true) {
-      writeFileSync(path.join(directory, `schema.json`), schema.json);
-    }
-  });
 
   console.info(`Successfully generated files for ${schemaFile}`);
 }

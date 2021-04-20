@@ -8,6 +8,7 @@ describe("custom-schema - standalone ES6", () => {
   const schemaDir = path.join(__dirname, "../schemas");
 
   beforeAll(async () => {
+    if (fs.existsSync(generatedDir)) fs.rmdirSync(generatedDir, { recursive: true });
     await generate({
       schemaFile: path.join(schemaDir, "custom-schema.js"),
       schemaType: "custom",
@@ -66,6 +67,7 @@ describe("custom-schema - standalone ES6 merged", () => {
   const schemaDir = path.join(__dirname, "../schemas");
 
   beforeAll(async () => {
+    if (fs.existsSync(generatedDir)) fs.rmdirSync(generatedDir, { recursive: true });
     await generate({
       schemaFile: path.join(schemaDir, "custom-schema.js"),
       schemaType: "custom",
@@ -137,6 +139,7 @@ describe("custom-schema - ajv compile", () => {
   const schemaDir = path.join(__dirname, "../schemas");
 
   beforeAll(async () => {
+    if (fs.existsSync(generatedDir)) fs.rmdirSync(generatedDir, { recursive: true });
     await generate({
       schemaFile: path.join(schemaDir, "custom-schema.js"),
       schemaType: "custom",
@@ -192,6 +195,7 @@ describe("custom-schema - standalone commonjs", () => {
   const schemaDir = path.join(__dirname, "../schemas");
 
   beforeAll(async () => {
+    if (fs.existsSync(generatedDir)) fs.rmdirSync(generatedDir, { recursive: true });
     await generate({
       schemaFile: path.join(schemaDir, "custom-schema.js"),
       schemaType: "custom",
@@ -285,6 +289,7 @@ describe("custom-schema - standalone commonjs merged", () => {
   const schemaDir = path.join(__dirname, "../schemas");
 
   beforeAll(async () => {
+    if (fs.existsSync(generatedDir)) fs.rmdirSync(generatedDir, { recursive: true });
     await generate({
       schemaFile: path.join(schemaDir, "custom-schema.js"),
       schemaType: "custom",

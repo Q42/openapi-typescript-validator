@@ -8,6 +8,7 @@ describe("compose-schema", () => {
   const schemaDir = path.join(__dirname, "../schemas");
 
   beforeAll(async () => {
+    if (fs.existsSync(generatedDir)) fs.rmdirSync(generatedDir, { recursive: true });
     await generate({
       schemaFile: path.join(schemaDir, "compose-schema.js"),
       schemaType: "custom",
