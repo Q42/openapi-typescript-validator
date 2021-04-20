@@ -1,6 +1,7 @@
 import { format, Options } from "prettier";
 import { ParsedSchema } from "../parse-schema";
 import Ajv from "ajv";
+import addFormats, { FormatsPluginOptions } from "ajv-formats";
 import standaloneCode from "ajv/dist/standalone";
 import { mkdirSync, writeFileSync } from "fs";
 import * as path from "path";
@@ -10,6 +11,8 @@ import { createDecoderName, createValidatorName } from "./generation-utils";
 export function generateStandaloneDecoders(
   definitionNames: string[],
   schema: ParsedSchema,
+  addFormats: boolean,
+  formatOptions: FormatsPluginOptions | undefined,
   output: ValidatorOutput,
   outDirs: string[],
   prettierOptions: Options
@@ -23,6 +26,8 @@ export function generateStandaloneDecoders(
     const validatorsOutput = standAloneValidatorOutput(
       schema,
       [definitionName],
+      addFormats,
+      formatOptions,
       output,
       prettierOptions
     );
@@ -83,6 +88,8 @@ export function generateStandaloneDecoders(
 export function generateStandaloneMergedDecoders(
   definitionNames: string[],
   schema: ParsedSchema,
+  addFormats: boolean,
+  formatOptions: FormatsPluginOptions | undefined,
   output: ValidatorOutput,
   outDirs: string[],
   prettierOptions: Options
@@ -115,7 +122,14 @@ export function generateStandaloneMergedDecoders(
 
   const rawValidatorsOutput = validatorsFileTemplate.replace(
     /\$Validators/g,
-    standAloneValidatorOutput(schema, definitionNames, output, prettierOptions)
+    standAloneValidatorOutput(
+      schema,
+      definitionNames,
+      addFormats,
+      formatOptions,
+      output,
+      prettierOptions
+    )
   );
 
   const validatorsOutput = format(rawValidatorsOutput, prettierOptions);
@@ -139,11 +153,16 @@ export function generateStandaloneMergedDecoders(
 function standAloneValidatorOutput(
   schema: ParsedSchema,
   definitions: string[],
+  formats: boolean,
+  formatOptions: FormatsPluginOptions | undefined,
   output: ValidatorOutput,
   prettierOptions: Options
 ): string {
   const ajv = new Ajv({ code: { source: true }, strict: false });
   ajv.compile(JSON.parse(schema.json));
+  if (formats) {
+    addFormats(ajv, formatOptions);
+  }
 
   const refs = definitions.reduce<Record<string, string>>(
     (acc, definitionName) => {

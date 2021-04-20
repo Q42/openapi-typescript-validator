@@ -207,7 +207,7 @@ We recommened to setup your schema configuration in a different folder than your
 - `schemas`
   - `package.json` which depends on this library
 - `server`
-  - `package.json` with `ajv` depedency
+  - `package.json` with `ajv` depedency and `ajv-formats` (if you use formats)
 
 ## Documentation
 

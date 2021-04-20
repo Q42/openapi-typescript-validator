@@ -47,6 +47,8 @@ export async function generate(options: GenerateOptions) {
       generateStandaloneMergedDecoders(
         definitionNames,
         schema,
+        options.addFormats ?? false,
+        options.formatOptions,
         options.standalone.validatorOutput,
         directories,
         prettierOptions
@@ -55,6 +57,8 @@ export async function generate(options: GenerateOptions) {
       generateStandaloneDecoders(
         definitionNames,
         schema,
+        options.addFormats ?? false,
+        options.formatOptions,
         options.standalone.validatorOutput,
         directories,
         prettierOptions
