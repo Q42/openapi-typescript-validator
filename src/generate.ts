@@ -39,6 +39,7 @@ export async function generate(options: GenerateOptions) {
       generateCompileBasedDecoders(
         definitionNames,
         options.addFormats ?? false,
+        options.formatOptions,
         directories,
         prettierOptions
       );

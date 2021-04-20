@@ -54,3 +54,31 @@ describe("format-schema - compile based", () => {
     expect(file).toMatchSnapshot();
   });
 });
+
+describe("format-schema - compile based - options", () => {
+  const name = "format";
+  const generatedDir = path.join(__dirname, "../generated", `${name}-options`);
+  const schemaDir = path.join(__dirname, "../schemas");
+
+  beforeAll(async () => {
+    if (fs.existsSync(generatedDir))
+      fs.rmdirSync(generatedDir, { recursive: true });
+    await generate({
+      schemaFile: path.join(schemaDir, "format-schema.js"),
+      schemaType: "custom",
+      name,
+      directory: generatedDir,
+      addFormats: true,
+      formatOptions: { mode: "fast", formats: ["date", "time"] },
+    });
+  });
+
+  test("decoders should match", () => {
+    const file = fs.readFileSync(
+      path.join(generatedDir, `decoders.ts`),
+      "utf8"
+    );
+    expect(file).not.toBeUndefined();
+    expect(file).toMatchSnapshot();
+  });
+});
