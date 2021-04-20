@@ -1,4 +1,4 @@
-import { FormatName } from 'ajv-formats';
+import { FormatName } from "ajv-formats";
 import { JSONSchema } from "json-schema-to-typescript";
 import { JSONSchemaTypeName } from "json-schema-to-typescript/dist/src/types/JSONSchema";
 
@@ -23,6 +23,11 @@ export const anonymousData: SchemaObject = {
   additionalProperties: { type: "string" },
 };
 
+interface StringFormat {
+  type: "string";
+  format: FormatName;
+}
+
 interface FormatOptions {
   formatMinimum?: string;
   formatMaximum?: string;
@@ -30,24 +35,31 @@ interface FormatOptions {
   formatExclusiveMaximum?: string;
 }
 
-const format = (obj: object, options: FormatOptions = {}) => ({ ...obj, ...options });
-const stringFormat = (formatName: FormatName) => (options: FormatOptions) => format({ type: "string", formatName }, options);
+const stringFormat = (format: FormatName) => (
+  options: FormatOptions = {}
+): StringFormat => {
+  return {
+    type: "string",
+    format,
+    ...(options ?? {}),
+  };
+};
 
-export const date = stringFormat('date');
-export const time = stringFormat('time');
-export const dateTime = stringFormat('date-time');
-export const duration = stringFormat('duration');
-export const uri = stringFormat('uri')
-export const uriReference = stringFormat('uri-reference')
-export const uriTemplate = stringFormat('uri-template');
-export const email = stringFormat('email')
-export const hostname = stringFormat('hostname')
-export const ipv4 = stringFormat('ipv4');
-export const ipv6 = stringFormat('ipv6');
-export const regex = stringFormat('regex');
-export const uuid = stringFormat('uuid');
-export const jsonPointer = stringFormat('json-pointer');
-export const relativeJsonPointer = stringFormat('relative-json-pointer');
+export const date = stringFormat("date");
+export const time = stringFormat("time");
+export const dateTime = stringFormat("date-time");
+export const duration = stringFormat("duration");
+export const uri = stringFormat("uri");
+export const uriReference = stringFormat("uri-reference");
+export const uriTemplate = stringFormat("uri-template");
+export const email = stringFormat("email");
+export const hostname = stringFormat("hostname");
+export const ipv4 = stringFormat("ipv4");
+export const ipv6 = stringFormat("ipv6");
+export const regex = stringFormat("regex");
+export const uuid = stringFormat("uuid");
+export const jsonPointer = stringFormat("json-pointer");
+export const relativeJsonPointer = stringFormat("relative-json-pointer");
 
 export const object = (
   properties: Record<string, PropertyValue>

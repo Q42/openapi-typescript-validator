@@ -84,13 +84,13 @@ exports[`format-schema - compile based schema should match 1`] = `
       \\"properties\\": {
         \\"createdAt\\": {
           \\"type\\": \\"string\\",
-          \\"formatName\\": \\"date\\",
+          \\"format\\": \\"date\\",
           \\"formatMinimum\\": \\"2016-02-06\\",
           \\"formatExclusiveMaximum\\": \\"2016-12-27\\"
         },
         \\"email\\": {
           \\"type\\": \\"string\\",
-          \\"formatName\\": \\"email\\"
+          \\"format\\": \\"email\\"
         }
       },
       \\"required\\": [
