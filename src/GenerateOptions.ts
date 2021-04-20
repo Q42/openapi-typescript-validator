@@ -30,6 +30,12 @@ export interface GenerateOptions {
   directory: string | string[];
 
   /**
+   * adds the "ajv-formats" packages
+   * @default false
+  */
+  addFormats?: boolean;
+
+  /**
    * @default prettier typescript options
    */
   prettierOptions?: Options;

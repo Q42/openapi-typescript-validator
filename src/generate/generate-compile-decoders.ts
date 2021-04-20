@@ -1,13 +1,11 @@
 import { format, Options } from "prettier";
-import { ParsedSchema } from "../parse-schema";
 import { mkdirSync, writeFileSync } from "fs";
 import path from "path";
 import { createDecoderName } from "./generation-utils";
 
 export function generateCompileBasedDecoders(
   definitionNames: string[],
-  schema: ParsedSchema,
-  packageName: string,
+  addFormats: boolean,
   outDirs: string[],
   prettierOptions: Options
 ): void {
@@ -21,8 +19,9 @@ export function generateCompileBasedDecoders(
     .join("\n");
 
   const rawDecoderOutput = decodersFileTemplate
+    .replace(/\$Imports/g, addFormats ? 'import addFormats from "ajv-formats"' : '')
+    .replace(/\$Formats/g, addFormats ? 'addFormats(ajv);': '')
     .replace(/\$ModelImports/g, definitionNames.join(", "))
-    .replace(/\$PackageName/g, packageName)
     .replace(/\$Decoders/g, decoders);
 
   const decoderOutput = format(rawDecoderOutput, prettierOptions);
@@ -38,13 +37,14 @@ const decodersFileTemplate = `
 /* eslint-disable */
 
 import Ajv from 'ajv';
-
+$Imports
 import { validateJson, Decoder } from './helpers';
 import { $ModelImports } from './models';
 import jsonSchema from './schema.json';
 
 const ajv = new Ajv({ strict: false });
 ajv.compile(jsonSchema);
+$Formats
 
 // Decoders
 $Decoders

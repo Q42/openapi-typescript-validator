@@ -38,8 +38,7 @@ export async function generate(options: GenerateOptions) {
     if (!options.standalone) {
       generateCompileBasedDecoders(
         definitionNames,
-        schema,
-        name,
+        options.addFormats ?? false,
         directories,
         prettierOptions
       );
@@ -48,7 +47,6 @@ export async function generate(options: GenerateOptions) {
         definitionNames,
         schema,
         options.standalone.validatorOutput,
-        name,
         directories,
         prettierOptions
       );
@@ -57,7 +55,6 @@ export async function generate(options: GenerateOptions) {
         definitionNames,
         schema,
         options.standalone.validatorOutput,
-        name,
         directories,
         prettierOptions
       );

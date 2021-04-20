@@ -201,6 +201,14 @@ generate({
 
 and run `node generate-schemas.js`
 
+**Note**
+We recommened to setup your schema configuration in a different folder than your application. E.g:
+
+- `schemas`
+  - `package.json` which depends on this library
+- `server`
+  - `package.json` with `ajv` depedency
+
 ## Documentation
 
 ### generate

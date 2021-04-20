@@ -11,7 +11,6 @@ export function generateStandaloneDecoders(
   definitionNames: string[],
   schema: ParsedSchema,
   output: ValidatorOutput,
-  packageName: string,
   outDirs: string[],
   prettierOptions: Options
 ): void {
@@ -37,8 +36,7 @@ export function generateStandaloneDecoders(
       .replace(/\$DecoderName/g, decoderName)
       .replace(/\$Class/g, definitionName)
       .replace(/\$ValidatorImports/g, validatorImportStatement)
-      .replace(/\$ValidatorName/g, validatorName)
-      .replace(/\$PackageName/g, packageName);
+      .replace(/\$ValidatorName/g, validatorName);
 
     const decoderOutput = format(rawDecoderOutput, prettierOptions);
 
@@ -86,7 +84,6 @@ export function generateStandaloneMergedDecoders(
   definitionNames: string[],
   schema: ParsedSchema,
   output: ValidatorOutput,
-  packageName: string,
   outDirs: string[],
   prettierOptions: Options
 ) {
@@ -112,7 +109,6 @@ export function generateStandaloneMergedDecoders(
   const rawDecoderOutput = mergedDecodersFileTemplate
     .replace(/\$ValidatorImports/g, validatorImportStatement)
     .replace(/\$ModelImports/g, definitionNames.join(", "))
-    .replace(/\$PackageName/g, packageName)
     .replace(/\$Decoders/g, decoders);
 
   const decoderOutput = format(rawDecoderOutput, prettierOptions);
