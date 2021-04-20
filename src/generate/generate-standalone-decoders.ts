@@ -159,10 +159,10 @@ function standAloneValidatorOutput(
   prettierOptions: Options
 ): string {
   const ajv = new Ajv({ code: { source: true }, strict: false });
-  ajv.compile(JSON.parse(schema.json));
   if (formats) {
     addFormats(ajv, formatOptions);
   }
+  ajv.compile(JSON.parse(schema.json));
 
   const refs = definitions.reduce<Record<string, string>>(
     (acc, definitionName) => {
