@@ -13,31 +13,62 @@ interface CustomSchemaObject {
 
 type PropertyValue = SchemaObject | CustomSchemaObject;
 
-export const boolean: SchemaObject = { type: "boolean" };
-export const id: SchemaObject = { type: "string", minLength: 1 };
-export const positiveInteger: SchemaObject = { type: "integer", minimum: 0 };
-export const string: SchemaObject = { type: "string" };
-export const number: SchemaObject = { type: "number" };
-export const any: SchemaObject = {};
-export const anonymousData: SchemaObject = {
-  additionalProperties: { type: "string" },
-};
+type PropertyBaseOptions = Pick<
+  JSONSchema,
+  "title" | "description" | "default"
+>;
 
-interface StringFormat {
-  type: "string";
-  format: FormatName;
-}
+type StringOptions = PropertyBaseOptions &
+  Pick<JSONSchema, "minLength" | "maxLength" | "pattern">;
 
-interface FormatOptions {
+type NumberOptions = PropertyBaseOptions &
+  Pick<
+    JSONSchema,
+    | "exclusiveMinimum"
+    | "exclusiveMaximum"
+    | "maximum"
+    | "minimum"
+    | "multipleOf"
+  >;
+
+type BooleanOptions = PropertyBaseOptions;
+
+// https://ajv.js.org/packages/ajv-formats.html#keywords-to-compare-values-formatmaximum-formatminimum-and-formatexclusivemaximum-formatexclusiveminimum
+interface FormatOptions extends StringOptions {
   formatMinimum?: string;
   formatMaximum?: string;
   formatExclusiveMinimum?: string;
   formatExclusiveMaximum?: string;
 }
 
+export const string = (options: StringOptions = {}): PropertyValue => ({
+  type: "string",
+  ...options,
+});
+
+export const number = (options: NumberOptions = {}): PropertyValue => ({
+  type: "number",
+  ...options,
+});
+
+export const boolean = (options: BooleanOptions = {}): PropertyValue => ({
+  type: "boolean",
+  ...options,
+});
+
+export const any = (options: JSONSchema = {}): PropertyValue => ({
+  ...options
+})
+
+export const anonymousData = (options: JSONSchema): PropertyValue => ({
+  additionalProperties: { type: "string" },
+  ...options,
+});
+
+
 const stringFormat = (format: FormatName) => (
   options: FormatOptions = {}
-): StringFormat => {
+): PropertyValue => {
   return {
     type: "string",
     format,

@@ -1,6 +1,7 @@
 import path from "path";
 import fs from "fs";
 import { generate } from "openapi-typescript-validator";
+import Ajv from 'ajv';
 
 describe("compose-schema", () => {
   const name = "compose";
@@ -21,13 +22,14 @@ describe("compose-schema", () => {
     });
   });
 
-  test("schema should match", () => {
+  test("schema should match", async () => {
     const file = fs.readFileSync(
       path.join(generatedDir, `schema.json`),
       "utf8"
     );
     expect(file).not.toBeUndefined();
     expect(file).toMatchSnapshot();
+    expect(await new Ajv().validateSchema(JSON.parse(file))).toEqual(true);
   });
 
   test("files should match", () => {

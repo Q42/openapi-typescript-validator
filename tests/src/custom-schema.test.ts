@@ -1,6 +1,7 @@
 import path from "path";
 import fs from "fs";
 import { generate } from "openapi-typescript-validator";
+import Ajv from 'ajv';
 
 describe("custom-schema - standalone ES6", () => {
   const name = "custom";
@@ -31,13 +32,15 @@ describe("custom-schema - standalone ES6", () => {
     ]);
   });
 
-  test("schema should match", () => {
+  test("schema should match", async () => {
     const file = fs.readFileSync(
       path.join(generatedDir, `schema.json`),
       "utf8"
     );
     expect(file).not.toBeUndefined();
     expect(file).toMatchSnapshot();
+
+    expect(await new Ajv().validateSchema(JSON.parse(file))).toEqual(true);
   });
 
   describe("decoders", () => {
@@ -80,13 +83,14 @@ describe("custom-schema - standalone ES6 merged", () => {
     });
   });
 
-  test("schema should match", () => {
+  test("schema should match", async () => {
     const file = fs.readFileSync(
       path.join(generatedDir, `schema.json`),
       "utf8"
     );
     expect(file).not.toBeUndefined();
     expect(file).toMatchSnapshot();
+    expect(await new Ajv().validateSchema(JSON.parse(file))).toEqual(true);
   });
 
   test("decoders", () => {
@@ -159,13 +163,14 @@ describe("custom-schema - ajv compile", () => {
     ]);
   });
 
-  test("schema should match", () => {
+  test("schema should match", async () => {
     const file = fs.readFileSync(
       path.join(generatedDir, `schema.json`),
       "utf8"
     );
     expect(file).not.toBeUndefined();
     expect(file).toMatchSnapshot();
+    expect(await new Ajv().validateSchema(JSON.parse(file))).toEqual(true);
   });
 
   test("decoders", () => {
@@ -258,13 +263,14 @@ describe("custom-schema - standalone commonjs", () => {
     });
   });
 
-  test("schema should match", () => {
+  test("schema should match", async () => {
     const file = fs.readFileSync(
       path.join(generatedDir, `schema.json`),
       "utf8"
     );
     expect(file).not.toBeUndefined();
     expect(file).toMatchSnapshot();
+    expect(await new Ajv().validateSchema(JSON.parse(file))).toEqual(true);
   });
 
   test("helpers.ts", () => {
@@ -314,13 +320,14 @@ describe("custom-schema - standalone commonjs merged", () => {
     ]);
   });
 
-  test("schema should match", () => {
+  test("schema should match", async () => {
     const file = fs.readFileSync(
       path.join(generatedDir, `schema.json`),
       "utf8"
     );
     expect(file).not.toBeUndefined();
     expect(file).toMatchSnapshot();
+    expect(await new Ajv().validateSchema(JSON.parse(file))).toEqual(true);
   });
 
   test("helpers.ts", () => {

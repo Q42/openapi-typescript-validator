@@ -110,6 +110,9 @@ export interface Screen {
 export interface TitleComponent {
   type: \\"title\\";
   title: string;
+  /**
+   * some description
+   */
   subtitle?: string | null;
   meta: Meta;
 }
@@ -169,7 +172,8 @@ exports[`custom-schema - ajv compile schema should match 1`] = `
           \\"type\\": [
             \\"string\\",
             \\"null\\"
-          ]
+          ],
+          \\"description\\": \\"some description\\"
         },
         \\"meta\\": {
           \\"$ref\\": \\"#/definitions/Meta\\"
@@ -345,6 +349,9 @@ export interface Screen {
 export interface TitleComponent {
   type: \\"title\\";
   title: string;
+  /**
+   * some description
+   */
   subtitle?: string | null;
   meta: Meta;
 }
@@ -404,7 +411,8 @@ exports[`custom-schema - standalone ES6 merged schema should match 1`] = `
           \\"type\\": [
             \\"string\\",
             \\"null\\"
-          ]
+          ],
+          \\"description\\": \\"some description\\"
         },
         \\"meta\\": {
           \\"$ref\\": \\"#/definitions/Meta\\"
@@ -493,6 +501,9 @@ export interface Screen {
 export interface TitleComponent {
   type: \\"title\\";
   title: string;
+  /**
+   * some description
+   */
   subtitle?: string | null;
   meta: Meta;
 }
@@ -552,7 +563,8 @@ exports[`custom-schema - standalone ES6 schema should match 1`] = `
           \\"type\\": [
             \\"string\\",
             \\"null\\"
-          ]
+          ],
+          \\"description\\": \\"some description\\"
         },
         \\"meta\\": {
           \\"$ref\\": \\"#/definitions/Meta\\"
@@ -801,6 +813,9 @@ export interface Screen {
 export interface TitleComponent {
   type: \\"title\\";
   title: string;
+  /**
+   * some description
+   */
   subtitle?: string | null;
   meta: Meta;
 }
@@ -860,7 +875,8 @@ exports[`custom-schema - standalone commonjs merged schema should match 1`] = `
           \\"type\\": [
             \\"string\\",
             \\"null\\"
-          ]
+          ],
+          \\"description\\": \\"some description\\"
         },
         \\"meta\\": {
           \\"$ref\\": \\"#/definitions/Meta\\"
@@ -943,6 +959,9 @@ export interface Screen {
 export interface TitleComponent {
   type: \\"title\\";
   title: string;
+  /**
+   * some description
+   */
   subtitle?: string | null;
   meta: Meta;
 }
@@ -1002,7 +1021,8 @@ exports[`custom-schema - standalone commonjs schema should match 1`] = `
           \\"type\\": [
             \\"string\\",
             \\"null\\"
-          ]
+          ],
+          \\"description\\": \\"some description\\"
         },
         \\"meta\\": {
           \\"$ref\\": \\"#/definitions/Meta\\"

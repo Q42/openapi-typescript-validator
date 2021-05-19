@@ -11,14 +11,14 @@ const {
 const types = {};
 
 types.BaseComponent = object({
-  id: string,
+  id: string(),
 });
 
 types.FooComponent = compose(
   types.BaseComponent,
   object({
     type: constant("foo"),
-    tag: nillable(number),
+    tag: nillable(number()),
   })
 );
 
@@ -26,7 +26,7 @@ types.BarComponent = compose(
   types.BaseComponent,
   object({
     type: constant("bar"),
-    name: string,
+    name: string(),
   })
 );
 
