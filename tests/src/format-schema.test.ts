@@ -14,7 +14,6 @@ describe("format-schema - compile based", () => {
     await generate({
       schemaFile: path.join(schemaDir, "format-schema.js"),
       schemaType: "custom",
-      name,
       directory: generatedDir,
       addFormats: true,
     });
@@ -28,6 +27,7 @@ describe("format-schema - compile based", () => {
       "meta.ts",
       "models.ts",
       "schema.json",
+      "validate.ts"
     ]);
   });
 
@@ -68,7 +68,6 @@ describe("format-schema - compile based - options", () => {
     await generate({
       schemaFile: path.join(schemaDir, "format-schema.js"),
       schemaType: "custom",
-      name,
       directory: generatedDir,
       addFormats: true,
       formatOptions: { mode: "fast", formats: ["date", "time"] },
@@ -100,7 +99,6 @@ describe("format-schema - standalone", () => {
     await generate({
       schemaFile: path.join(schemaDir, "format-schema.js"),
       schemaType: "custom",
-      name,
       directory: generatedDir,
       addFormats: true,
       standalone: { validatorOutput: "commonjs" },
@@ -115,6 +113,7 @@ describe("format-schema - standalone", () => {
       "meta.ts",
       "models.ts",
       "schema.json",
+      "validate.ts"
     ]);
   });
 

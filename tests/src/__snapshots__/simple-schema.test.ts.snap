@@ -3,7 +3,8 @@
 exports[`simple-schema decoders UserDecoder decoder 1`] = `
 "/* eslint-disable */
 
-import { validateJson, Validator, Decoder } from \\"../../helpers\\";
+import { Decoder } from \\"../../helpers\\";
+import { validateJson, Validator } from \\"../../validate\\";
 import { User } from \\"../../models\\";
 import { UserValidator } from \\"./validator\\";
 
@@ -126,51 +127,11 @@ export { UserDecoder } from \\"./User/decoder\\";
 
 exports[`simple-schema helpers.ts 1`] = `
 "/* eslint-disable */
-import type { ErrorObject } from \\"ajv\\";
 
 export interface Decoder<T> {
   definitionName: string;
   schemaRef: string;
   decode: (json: unknown) => T;
-}
-
-export interface Validator {
-  (json: unknown): boolean;
-  errors?: ErrorObject[] | null;
-}
-
-export function validateJson(
-  json: any,
-  validator: Validator,
-  definitionName: string
-): any {
-  const jsonObject = typeof json === \\"string\\" ? JSON.parse(json) : json;
-
-  if (validator(jsonObject)) {
-    return jsonObject;
-  }
-
-  const jsonPreviewStr = (typeof json === \\"string\\"
-    ? json
-    : JSON.stringify(jsonObject)
-  ).substring(0, 200);
-  if (validator.errors) {
-    throw Error(
-      \`\${definitionName} \${errorsText(
-        validator.errors
-      )}. JSON: \${jsonPreviewStr}\`
-    );
-  }
-
-  throw Error(
-    \`\${definitionName} Unexpected data received. JSON: \${jsonPreviewStr}\`
-  );
-}
-
-function errorsText(errors: ErrorObject[]): string {
-  return errors
-    .map((error) => \`\${error.instancePath}: \${error.message}\`)
-    .join(\\"\\\\n\\");
 }
 "
 `;
@@ -237,4 +198,49 @@ exports[`simple-schema schema should match 1`] = `
     }
   }
 }"
+`;
+
+exports[`simple-schema validate.ts 1`] = `
+"/* eslint-disable */
+import type { ErrorObject } from \\"ajv\\";
+
+export interface Validator {
+  (json: unknown): boolean;
+  errors?: ErrorObject[] | null;
+}
+
+export function validateJson(
+  json: any,
+  validator: Validator,
+  definitionName: string
+): any {
+  const jsonObject = typeof json === \\"string\\" ? JSON.parse(json) : json;
+
+  if (validator(jsonObject)) {
+    return jsonObject;
+  }
+
+  const jsonPreviewStr = (typeof json === \\"string\\"
+    ? json
+    : JSON.stringify(jsonObject)
+  ).substring(0, 200);
+  if (validator.errors) {
+    throw Error(
+      \`\${definitionName} \${errorsText(
+        validator.errors
+      )}. JSON: \${jsonPreviewStr}\`
+    );
+  }
+
+  throw Error(
+    \`\${definitionName} Unexpected data received. JSON: \${jsonPreviewStr}\`
+  );
+}
+
+function errorsText(errors: ErrorObject[]): string {
+  return errors
+    .map((error) => \`\${error.instancePath}: \${error.message}\`)
+    .join(\\"\\\\n\\");
+}
+"
 `;

@@ -6,9 +6,10 @@ import { generateCompileBasedDecoders } from './generate/generate-compile-decode
 import { generateStandaloneDecoders, generateStandaloneMergedDecoders } from './generate/generate-standalone-decoders';
 import { generateHelpers } from './generate/generate-helpers';
 import { generateModels } from './generate/generate-models';
+import { generateAjvValidator } from './generate/generate-ajv-validator';
 
 export async function generate(options: GenerateOptions) {
-  const { name, schemaFile, schemaType } = options;
+  const { schemaFile, schemaType } = options;
   const prettierOptions = options.prettierOptions ?? { parser: "typescript" };
 
   const directories: string[] =
@@ -34,7 +35,9 @@ export async function generate(options: GenerateOptions) {
     return !decoderWhitelistById || decoderWhitelistById[name];
   });
 
-  if (options.skipDecoders !== true) {
+  if (options.skipDecoders !== true && definitionNames.length > 0) {
+    generateAjvValidator(prettierOptions, directories);
+
     if (!options.standalone) {
       generateCompileBasedDecoders(
         definitionNames,
@@ -70,7 +73,7 @@ export async function generate(options: GenerateOptions) {
   generateHelpers(prettierOptions, directories);
 
   if (options.skipMetaFile !== true) {
-    generateMetaFile(allDefinitions, name, directories, prettierOptions);
+    generateMetaFile(allDefinitions, directories, prettierOptions);
   }
 
   console.info(`Successfully generated files for ${schemaFile}`);

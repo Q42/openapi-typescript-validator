@@ -13,7 +13,6 @@ describe("simple-schema", () => {
     await generate({
       schemaFile: path.join(schemaDir, "simple-schema.yaml"),
       schemaType: "yaml",
-      name,
       directory: generatedDir,
       standalone: {
         validatorOutput: 'module',
@@ -43,6 +42,14 @@ describe("simple-schema", () => {
   test('helpers.ts', () => {
     const file = fs.readFileSync(
       path.join(generatedDir, `helpers.ts`),
+      "utf8"
+    );
+    expect(file).toMatchSnapshot();
+  })
+
+  test("validate.ts", () => {
+    const file = fs.readFileSync(
+      path.join(generatedDir, `validate.ts`),
       "utf8"
     );
     expect(file).toMatchSnapshot();

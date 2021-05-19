@@ -226,7 +226,8 @@ export const $DecoderName: Decoder<$Class> = {
 const decoderFileTemplate = `
 /* eslint-disable */
 
-import { validateJson, Validator, Decoder } from '../../helpers';
+import { Decoder } from '../../helpers';
+import { validateJson, Validator } from '../../validate';
 import { $Class } from '../../models';
 $ValidatorImports
 
@@ -242,7 +243,8 @@ $Exports
 const mergedDecodersFileTemplate = `
 /* eslint-disable */
 
-import { validateJson, Validator, Decoder } from './helpers';
+import { Decoder } from './helpers';
+import { validateJson, Validator } from './validate';
 import { $ModelImports } from './models';
 $ValidatorImports
 

@@ -13,7 +13,6 @@ describe("compose-schema", () => {
     await generate({
       schemaFile: path.join(schemaDir, "compose-schema.js"),
       schemaType: "custom",
-      name,
       directory: generatedDir,
       decoders: ['BarComponent', 'FooComponent', 'notfound'],
       standalone: {
@@ -40,6 +39,7 @@ describe("compose-schema", () => {
       "meta.ts",
       "models.ts",
       "schema.json",
+      "validate.ts"
     ]);
   });
 

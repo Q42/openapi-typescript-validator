@@ -193,7 +193,6 @@ const { generate } = require('openapi-typescript-validator');
 generate({
   schemaFile: path.join(__dirname, 'myswagger.yaml'),
   schemaType: 'yaml',
-  name: 'api',
   directory: path.join(__dirname, '/generated')
 })
 

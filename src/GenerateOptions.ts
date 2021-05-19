@@ -24,9 +24,6 @@ export interface GenerateOptions {
 
   schemaType: SchemaType;
 
-  /** prefix for the generated files */
-  name: string;
-
   /** location(s) where the output files will be stored. */
   directory: string | string[];
 

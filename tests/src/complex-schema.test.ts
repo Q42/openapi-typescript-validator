@@ -13,7 +13,6 @@ describe("complex-schema", () => {
     await generate({
       schemaFile: path.join(schemaDir, "complex-schema.json"),
       schemaType: "json",
-      name,
       directory: generatedDir,
       standalone: {
         validatorOutput: 'module',

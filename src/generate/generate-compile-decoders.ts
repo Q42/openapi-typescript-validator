@@ -50,7 +50,8 @@ const decodersFileTemplate = `
 
 import Ajv from 'ajv';
 $Imports
-import { validateJson, Decoder } from './helpers';
+import { Decoder } from './helpers';
+import { validateJson } from './validate';
 import { $ModelImports } from './models';
 import jsonSchema from './schema.json';
 
