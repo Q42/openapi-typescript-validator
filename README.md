@@ -151,13 +151,13 @@ types.Component = anyOf(['TitleComponent', 'ImageComponent']);
 
 types.TitleComponent = object({
   type: constant('title'),
-  title: string,
+  title: string(),
   subtitle: nillable(string),
 });
 
 types.ImageComponent = object({
   type: constant('image'),
-  url: string,
+  url: string(),
 });
 
 module.exports = { types }
@@ -208,6 +208,20 @@ We recommened to setup your schema configuration in a different folder than your
   - `package.json` which depends on this library
 - `server`
   - `package.json` with `ajv` depedency and `ajv-formats` (if you use formats)
+
+## Breaking changes
+
+### upgrading to V3
+When using the `custom` format for your schemas. The `string`, `boolean`, `number`, etc helpers are now a `function` instead of `const`.
+
+You'll need to update your schemas
+```javascript
+// v2
+object({ title: string })
+
+// v3:
+object({ title: string() })
+```
 
 ## Documentation
 

@@ -10,19 +10,19 @@ types.Component = anyOf(['TitleComponent', 'ImageComponent']);
 
 types.TitleComponent = object({
   type: constant('title'),
-  title: string,
-  subtitle: nillable(string),
+  title: string(),
+  subtitle: nillable(string({ description: 'some description' })),
   meta: ref('Meta'),
 });
 
 types.ImageComponent = object({
   type: constant('image'),
-  url: string,
+  url: string(),
   meta: ref('Meta'),
 });
 
 types.Meta = object({
-  dateTime: string,
+  dateTime: string(),
 })
 
 module.exports = {
