@@ -17,6 +17,8 @@ export function generateStandaloneDecoders(
   outDirs: string[],
   prettierOptions: Options
 ): void {
+  if (definitionNames.length === 0) return;
+
   const indexExports: string[] = [];
 
   definitionNames.forEach((definitionName) => {
@@ -94,6 +96,8 @@ export function generateStandaloneMergedDecoders(
   outDirs: string[],
   prettierOptions: Options
 ) {
+  if (definitionNames.length === 0) return;
+
   const decoders = definitionNames
     .map((definitionName) =>
       decoderTemplate

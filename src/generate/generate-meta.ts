@@ -4,7 +4,6 @@ import path from "path";
 
 export function generateMetaFile(
   definitionNames: string[],
-  packageName: string,
   outDirs: string[],
   prettierOptions: Options
 ): void {
@@ -17,7 +16,6 @@ export function generateMetaFile(
   const rawOutput = metaTemplate
     .replace(/\$Definitions/g, metas)
     .replace(/\$ModelImports/g, definitionNames.join(", "))
-    .replace(/\$PackageName/g, packageName);
 
   const output = format(rawOutput, prettierOptions);
 

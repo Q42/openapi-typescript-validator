@@ -11,6 +11,8 @@ export function generateCompileBasedDecoders(
   outDirs: string[],
   prettierOptions: Options
 ): void {
+  if (definitionNames.length === 0) return;
+
   const decoders = definitionNames
     .map((definitionName) =>
       decoderTemplate

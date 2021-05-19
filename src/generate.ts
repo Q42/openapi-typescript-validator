@@ -8,7 +8,7 @@ import { generateHelpers } from './generate/generate-helpers';
 import { generateModels } from './generate/generate-models';
 
 export async function generate(options: GenerateOptions) {
-  const { name, schemaFile, schemaType } = options;
+  const { schemaFile, schemaType } = options;
   const prettierOptions = options.prettierOptions ?? { parser: "typescript" };
 
   const directories: string[] =
@@ -70,7 +70,7 @@ export async function generate(options: GenerateOptions) {
   generateHelpers(prettierOptions, directories);
 
   if (options.skipMetaFile !== true) {
-    generateMetaFile(allDefinitions, name, directories, prettierOptions);
+    generateMetaFile(allDefinitions, directories, prettierOptions);
   }
 
   console.info(`Successfully generated files for ${schemaFile}`);
