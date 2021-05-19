@@ -17,8 +17,6 @@ export function generateStandaloneDecoders(
   outDirs: string[],
   prettierOptions: Options
 ): void {
-  if (definitionNames.length === 0) return;
-
   const indexExports: string[] = [];
 
   definitionNames.forEach((definitionName) => {
@@ -96,8 +94,6 @@ export function generateStandaloneMergedDecoders(
   outDirs: string[],
   prettierOptions: Options
 ) {
-  if (definitionNames.length === 0) return;
-
   const decoders = definitionNames
     .map((definitionName) =>
       decoderTemplate
@@ -230,7 +226,8 @@ export const $DecoderName: Decoder<$Class> = {
 const decoderFileTemplate = `
 /* eslint-disable */
 
-import { validateJson, Validator, Decoder } from '../../helpers';
+import { Decoder } from '../../helpers';
+import { validateJson, Validator } from '../../validate';
 import { $Class } from '../../models';
 $ValidatorImports
 
@@ -246,7 +243,8 @@ $Exports
 const mergedDecodersFileTemplate = `
 /* eslint-disable */
 
-import { validateJson, Validator, Decoder } from './helpers';
+import { Decoder } from './helpers';
+import { validateJson, Validator } from './validate';
 import { $ModelImports } from './models';
 $ValidatorImports
 

@@ -5,7 +5,8 @@ exports[`format-schema - compile based - options decoders should match 1`] = `
 
 import Ajv from \\"ajv\\";
 import addFormats from \\"ajv-formats\\";
-import { validateJson, Decoder } from \\"./helpers\\";
+import { Decoder } from \\"./helpers\\";
+import { validateJson } from \\"./validate\\";
 import { User, Price } from \\"./models\\";
 import jsonSchema from \\"./schema.json\\";
 
@@ -46,7 +47,8 @@ exports[`format-schema - compile based decoders should match 1`] = `
 
 import Ajv from \\"ajv\\";
 import addFormats from \\"ajv-formats\\";
-import { validateJson, Decoder } from \\"./helpers\\";
+import { Decoder } from \\"./helpers\\";
+import { validateJson } from \\"./validate\\";
 import { User, Price } from \\"./models\\";
 import jsonSchema from \\"./schema.json\\";
 

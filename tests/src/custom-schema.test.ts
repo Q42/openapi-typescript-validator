@@ -1,7 +1,7 @@
 import path from "path";
 import fs from "fs";
 import { generate } from "openapi-typescript-validator";
-import Ajv from 'ajv';
+import Ajv from "ajv";
 
 describe("custom-schema - standalone ES6", () => {
   const name = "custom";
@@ -9,11 +9,11 @@ describe("custom-schema - standalone ES6", () => {
   const schemaDir = path.join(__dirname, "../schemas");
 
   beforeAll(async () => {
-    if (fs.existsSync(generatedDir)) fs.rmdirSync(generatedDir, { recursive: true });
+    if (fs.existsSync(generatedDir))
+      fs.rmdirSync(generatedDir, { recursive: true });
     await generate({
       schemaFile: path.join(schemaDir, "custom-schema.js"),
       schemaType: "custom",
-      name,
       directory: generatedDir,
       standalone: {
         validatorOutput: "module",
@@ -29,6 +29,7 @@ describe("custom-schema - standalone ES6", () => {
       "meta.ts",
       "models.ts",
       "schema.json",
+      "validate.ts",
     ]);
   });
 
@@ -70,11 +71,11 @@ describe("custom-schema - standalone ES6 merged", () => {
   const schemaDir = path.join(__dirname, "../schemas");
 
   beforeAll(async () => {
-    if (fs.existsSync(generatedDir)) fs.rmdirSync(generatedDir, { recursive: true });
+    if (fs.existsSync(generatedDir))
+      fs.rmdirSync(generatedDir, { recursive: true });
     await generate({
       schemaFile: path.join(schemaDir, "custom-schema.js"),
       schemaType: "custom",
-      name,
       directory: generatedDir,
       standalone: {
         mergeDecoders: true,
@@ -143,11 +144,11 @@ describe("custom-schema - ajv compile", () => {
   const schemaDir = path.join(__dirname, "../schemas");
 
   beforeAll(async () => {
-    if (fs.existsSync(generatedDir)) fs.rmdirSync(generatedDir, { recursive: true });
+    if (fs.existsSync(generatedDir))
+      fs.rmdirSync(generatedDir, { recursive: true });
     await generate({
       schemaFile: path.join(schemaDir, "custom-schema.js"),
       schemaType: "custom",
-      name,
       directory: generatedDir,
     });
   });
@@ -160,6 +161,7 @@ describe("custom-schema - ajv compile", () => {
       "meta.ts",
       "models.ts",
       "schema.json",
+      "validate.ts",
     ]);
   });
 
@@ -200,11 +202,11 @@ describe("custom-schema - standalone commonjs", () => {
   const schemaDir = path.join(__dirname, "../schemas");
 
   beforeAll(async () => {
-    if (fs.existsSync(generatedDir)) fs.rmdirSync(generatedDir, { recursive: true });
+    if (fs.existsSync(generatedDir))
+      fs.rmdirSync(generatedDir, { recursive: true });
     await generate({
       schemaFile: path.join(schemaDir, "custom-schema.js"),
       schemaType: "custom",
-      name,
       directory: generatedDir,
       standalone: {
         validatorOutput: "commonjs",
@@ -220,6 +222,7 @@ describe("custom-schema - standalone commonjs", () => {
       "meta.ts",
       "models.ts",
       "schema.json",
+      "validate.ts",
     ]);
   });
 
@@ -295,11 +298,11 @@ describe("custom-schema - standalone commonjs merged", () => {
   const schemaDir = path.join(__dirname, "../schemas");
 
   beforeAll(async () => {
-    if (fs.existsSync(generatedDir)) fs.rmdirSync(generatedDir, { recursive: true });
+    if (fs.existsSync(generatedDir))
+      fs.rmdirSync(generatedDir, { recursive: true });
     await generate({
       schemaFile: path.join(schemaDir, "custom-schema.js"),
       schemaType: "custom",
-      name,
       directory: generatedDir,
       standalone: {
         mergeDecoders: true,
@@ -316,6 +319,7 @@ describe("custom-schema - standalone commonjs merged", () => {
       "meta.ts",
       "models.ts",
       "schema.json",
+      "validate.ts",
       "validators.js",
     ]);
   });
@@ -347,6 +351,57 @@ describe("custom-schema - standalone commonjs merged", () => {
       "utf8"
     );
 
+    expect(file).toMatchSnapshot();
+  });
+});
+
+describe("custom-schema - no decoders", () => {
+  const name = "custom-no-decoders";
+  const generatedDir = path.join(__dirname, "../generated", `${name}-commonjs`);
+  const schemaDir = path.join(__dirname, "../schemas");
+
+  beforeAll(async () => {
+    if (fs.existsSync(generatedDir))
+      fs.rmdirSync(generatedDir, { recursive: true });
+    await generate({
+      schemaFile: path.join(schemaDir, "custom-schema.js"),
+      schemaType: "custom",
+      directory: generatedDir,
+      standalone: {
+        validatorOutput: "commonjs",
+      },
+      decoders: [],
+    });
+  });
+
+  test("files", () => {
+    const files = fs.readdirSync(generatedDir);
+    expect(files).toEqual([
+      "helpers.ts",
+      "meta.ts",
+      "models.ts",
+      "schema.json",
+    ]);
+  });
+
+  test("schema should match", async () => {
+    const file = fs.readFileSync(
+      path.join(generatedDir, `schema.json`),
+      "utf8"
+    );
+    expect(file).not.toBeUndefined();
+    expect(file).toMatchSnapshot();
+    expect(await new Ajv().validateSchema(JSON.parse(file))).toEqual(true);
+  });
+
+  test("helpers.ts", () => {
+    const file = fs.readFileSync(path.join(generatedDir, `helpers.ts`), "utf8");
+    expect(file).toMatchSnapshot();
+  });
+
+  test("models should match", () => {
+    const file = fs.readFileSync(path.join(generatedDir, `models.ts`), "utf8");
+    expect(file).not.toBeUndefined();
     expect(file).toMatchSnapshot();
   });
 });

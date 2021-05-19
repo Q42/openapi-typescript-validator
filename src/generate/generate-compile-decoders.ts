@@ -11,8 +11,6 @@ export function generateCompileBasedDecoders(
   outDirs: string[],
   prettierOptions: Options
 ): void {
-  if (definitionNames.length === 0) return;
-
   const decoders = definitionNames
     .map((definitionName) =>
       decoderTemplate
@@ -52,7 +50,8 @@ const decodersFileTemplate = `
 
 import Ajv from 'ajv';
 $Imports
-import { validateJson, Decoder } from './helpers';
+import { Decoder } from './helpers';
+import { validateJson } from './validate';
 import { $ModelImports } from './models';
 import jsonSchema from './schema.json';
 
