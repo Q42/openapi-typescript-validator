@@ -201,9 +201,11 @@ export const compose = (...sources: SchemaObject[]): SchemaObject => {
     }
   });
 
+  const required = Object.keys(requiredRecord);
+
   return {
     type: "object",
     properties,
-    required: Object.keys(requiredRecord),
+    required: required.length === 0 ? undefined : required,
   };
 };
