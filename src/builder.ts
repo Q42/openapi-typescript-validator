@@ -121,7 +121,7 @@ export const object = (
   return {
     type: "object",
     properties: schemaProperties,
-    required,
+    required: required.length === 0 ? undefined : required,
     ...options,
   };
 };
