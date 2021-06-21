@@ -13,6 +13,8 @@ types.TitleComponent = object({
   title: string(),
   subtitle: nillable(string({ description: 'some description' })),
   meta: ref('Meta'),
+}, {
+  description: 'Title component'
 });
 
 types.ImageComponent = object({

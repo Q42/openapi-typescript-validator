@@ -68,6 +68,9 @@ export type Component = TitleComponent | ImageComponent;
 export interface Screen {
   components: Component[];
 }
+/**
+ * Title component
+ */
 export interface TitleComponent {
   type: \\"title\\";
   title: string;
@@ -144,7 +147,8 @@ exports[`custom-schema - ajv compile schema should match 1`] = `
         \\"type\\",
         \\"title\\",
         \\"meta\\"
-      ]
+      ],
+      \\"description\\": \\"Title component\\"
     },
     \\"ImageComponent\\": {
       \\"type\\": \\"object\\",
@@ -225,6 +229,9 @@ export type Component = TitleComponent | ImageComponent;
 export interface Screen {
   components: Component[];
 }
+/**
+ * Title component
+ */
 export interface TitleComponent {
   type: \\"title\\";
   title: string;
@@ -301,7 +308,8 @@ exports[`custom-schema - no decoders schema should match 1`] = `
         \\"type\\",
         \\"title\\",
         \\"meta\\"
-      ]
+      ],
+      \\"description\\": \\"Title component\\"
     },
     \\"ImageComponent\\": {
       \\"type\\": \\"object\\",
@@ -425,6 +433,9 @@ export type Component = TitleComponent | ImageComponent;
 export interface Screen {
   components: Component[];
 }
+/**
+ * Title component
+ */
 export interface TitleComponent {
   type: \\"title\\";
   title: string;
@@ -501,7 +512,8 @@ exports[`custom-schema - standalone ES6 merged schema should match 1`] = `
         \\"type\\",
         \\"title\\",
         \\"meta\\"
-      ]
+      ],
+      \\"description\\": \\"Title component\\"
     },
     \\"ImageComponent\\": {
       \\"type\\": \\"object\\",
@@ -577,6 +589,9 @@ export type Component = TitleComponent | ImageComponent;
 export interface Screen {
   components: Component[];
 }
+/**
+ * Title component
+ */
 export interface TitleComponent {
   type: \\"title\\";
   title: string;
@@ -653,7 +668,8 @@ exports[`custom-schema - standalone ES6 schema should match 1`] = `
         \\"type\\",
         \\"title\\",
         \\"meta\\"
-      ]
+      ],
+      \\"description\\": \\"Title component\\"
     },
     \\"ImageComponent\\": {
       \\"type\\": \\"object\\",
@@ -811,6 +827,9 @@ export type Component = TitleComponent | ImageComponent;
 export interface Screen {
   components: Component[];
 }
+/**
+ * Title component
+ */
 export interface TitleComponent {
   type: \\"title\\";
   title: string;
@@ -887,7 +906,8 @@ exports[`custom-schema - standalone commonjs merged schema should match 1`] = `
         \\"type\\",
         \\"title\\",
         \\"meta\\"
-      ]
+      ],
+      \\"description\\": \\"Title component\\"
     },
     \\"ImageComponent\\": {
       \\"type\\": \\"object\\",
@@ -957,6 +977,9 @@ export type Component = TitleComponent | ImageComponent;
 export interface Screen {
   components: Component[];
 }
+/**
+ * Title component
+ */
 export interface TitleComponent {
   type: \\"title\\";
   title: string;
@@ -1033,7 +1056,8 @@ exports[`custom-schema - standalone commonjs schema should match 1`] = `
         \\"type\\",
         \\"title\\",
         \\"meta\\"
-      ]
+      ],
+      \\"description\\": \\"Title component\\"
     },
     \\"ImageComponent\\": {
       \\"type\\": \\"object\\",

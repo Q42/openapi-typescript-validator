@@ -18,6 +18,13 @@ type PropertyBaseOptions = Pick<
   "title" | "description" | "default"
 >;
 
+type ObjectBaseOptions = Pick<
+  JSONSchema,
+  "title" | "description" | "default"
+>;
+
+type ArrayOptions = PropertyBaseOptions;
+
 type StringOptions = PropertyBaseOptions &
   Pick<JSONSchema, "minLength" | "maxLength" | "pattern">;
 
@@ -93,7 +100,8 @@ export const jsonPointer = stringFormat("json-pointer");
 export const relativeJsonPointer = stringFormat("relative-json-pointer");
 
 export const object = (
-  properties: Record<string, PropertyValue>
+  properties: Record<string, PropertyValue>,
+  options: ObjectBaseOptions = {},
 ): SchemaObject => {
   const required: string[] = [];
   const schemaProperties: Record<string, SchemaObject> = {};
@@ -114,6 +122,7 @@ export const object = (
     type: "object",
     properties: schemaProperties,
     required,
+    ...options,
   };
 };
 
@@ -124,9 +133,10 @@ export const ref = (refName: string): SchemaObject => ({
 const autoRef = (type: SchemaObjectOrRef): SchemaObject =>
   typeof type === "string" ? ref(type) : type;
 
-export const array = (itemType: SchemaObjectOrRef): SchemaObject => ({
+export const array = (itemType: SchemaObjectOrRef, options: ArrayOptions = {}): SchemaObject => ({
   type: "array",
   items: autoRef(itemType),
+  ...options,
 });
 
 export const map = (itemType: SchemaObjectOrRef): SchemaObject => ({
