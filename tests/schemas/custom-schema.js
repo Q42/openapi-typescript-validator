@@ -27,7 +27,9 @@ types.Meta = object({
   dateTime: string(),
 })
 
+types.ListerComponent = array(types.Component)
+
 module.exports = {
   types,
-  decoders: ['Screen', 'ImageComponent']
+  decoders: ['Screen', 'ImageComponent', 'ListerComponent']
 }
