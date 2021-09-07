@@ -49,7 +49,12 @@ describe("custom-schema - standalone ES6", () => {
 
     test("file structure", () => {
       const dir = fs.readdirSync(decodersDir);
-      expect(dir).toEqual(["ImageComponent", "Screen", "index.ts"]);
+      expect(dir).toEqual([
+        "ImageComponent",
+        "ListerComponent",
+        "Screen",
+        "index.ts",
+      ]);
     });
 
     test("index.ts", () => {
@@ -231,7 +236,12 @@ describe("custom-schema - standalone commonjs", () => {
 
     test("file structure", () => {
       const dir = fs.readdirSync(decodersDir);
-      expect(dir).toEqual(["ImageComponent", "Screen", "index.ts"]);
+      expect(dir).toEqual([
+        "ImageComponent",
+        "ListerComponent",
+        "Screen",
+        "index.ts",
+      ]);
     });
 
     test("index.ts", () => {

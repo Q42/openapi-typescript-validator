@@ -2,11 +2,14 @@ import keyby from "lodash.keyby";
 import { parseSchema } from "./parse-schema";
 import { GenerateOptions } from "./GenerateOptions";
 import { generateMetaFile } from "./generate/generate-meta";
-import { generateCompileBasedDecoders } from './generate/generate-compile-decoders';
-import { generateStandaloneDecoders, generateStandaloneMergedDecoders } from './generate/generate-standalone-decoders';
-import { generateHelpers } from './generate/generate-helpers';
-import { generateModels } from './generate/generate-models';
-import { generateAjvValidator } from './generate/generate-ajv-validator';
+import { generateCompileBasedDecoders } from "./generate/generate-compile-decoders";
+import {
+  generateStandaloneDecoders,
+  generateStandaloneMergedDecoders,
+} from "./generate/generate-standalone-decoders";
+import { generateHelpers } from "./generate/generate-helpers";
+import { generateModels } from "./generate/generate-models";
+import { generateAjvValidator } from "./generate/generate-ajv-validator";
 
 export async function generate(options: GenerateOptions) {
   const { schemaFile, schemaType } = options;
@@ -31,7 +34,8 @@ export async function generate(options: GenerateOptions) {
     : undefined;
 
   const definitionNames = allDefinitions.filter((name) => {
-    if (schema.definitions[name]?.type !== "object") return false;
+    const schemaType = schema.definitions[name]?.type;
+    if (schemaType !== "object" && schemaType !== "array") return false;
     return !decoderWhitelistById || decoderWhitelistById[name];
   });
 
@@ -69,7 +73,12 @@ export async function generate(options: GenerateOptions) {
     }
   }
 
-  await generateModels(schema, { skipSchemaFile: options.skipSchemaFile }, prettierOptions, directories);
+  await generateModels(
+    schema,
+    { skipSchemaFile: options.skipSchemaFile },
+    prettierOptions,
+    directories
+  );
   generateHelpers(prettierOptions, directories);
 
   if (options.skipMetaFile !== true) {

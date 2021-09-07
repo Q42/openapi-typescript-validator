@@ -7,7 +7,7 @@ import Ajv from \\"ajv\\";
 
 import { Decoder } from \\"./helpers\\";
 import { validateJson } from \\"./validate\\";
-import { Screen, ImageComponent } from \\"./models\\";
+import { Screen, ImageComponent, ListerComponent } from \\"./models\\";
 import jsonSchema from \\"./schema.json\\";
 
 const ajv = new Ajv({ strict: false });
@@ -40,6 +40,20 @@ export const ImageComponentDecoder: Decoder<ImageComponent> = {
     return validateJson(json, schema, ImageComponentDecoder.definitionName);
   },
 };
+export const ListerComponentDecoder: Decoder<ListerComponent> = {
+  definitionName: \\"ListerComponent\\",
+  schemaRef: \\"#/definitions/ListerComponent\\",
+
+  decode(json: unknown): ListerComponent {
+    const schema = ajv.getSchema(ListerComponentDecoder.schemaRef);
+    if (!schema) {
+      throw new Error(
+        \`Schema \${ListerComponentDecoder.definitionName} not found\`
+      );
+    }
+    return validateJson(json, schema, ListerComponentDecoder.definitionName);
+  },
+};
 "
 `;
 
@@ -64,6 +78,7 @@ exports[`custom-schema - ajv compile models should match 1`] = `
  */
 
 export type Component = TitleComponent | ImageComponent;
+export type ListerComponent = (TitleComponent | ImageComponent)[];
 
 export interface Screen {
   components: Component[];
@@ -182,6 +197,19 @@ exports[`custom-schema - ajv compile schema should match 1`] = `
       \\"required\\": [
         \\"dateTime\\"
       ]
+    },
+    \\"ListerComponent\\": {
+      \\"type\\": \\"array\\",
+      \\"items\\": {
+        \\"anyOf\\": [
+          {
+            \\"$ref\\": \\"#/definitions/TitleComponent\\"
+          },
+          {
+            \\"$ref\\": \\"#/definitions/ImageComponent\\"
+          }
+        ]
+      }
     }
   },
   \\"properties\\": {
@@ -199,6 +227,9 @@ exports[`custom-schema - ajv compile schema should match 1`] = `
     },
     \\"Meta\\": {
       \\"$ref\\": \\"#/definitions/Meta\\"
+    },
+    \\"ListerComponent\\": {
+      \\"$ref\\": \\"#/definitions/ListerComponent\\"
     }
   }
 }"
@@ -225,6 +256,7 @@ exports[`custom-schema - no decoders models should match 1`] = `
  */
 
 export type Component = TitleComponent | ImageComponent;
+export type ListerComponent = (TitleComponent | ImageComponent)[];
 
 export interface Screen {
   components: Component[];
@@ -343,6 +375,19 @@ exports[`custom-schema - no decoders schema should match 1`] = `
       \\"required\\": [
         \\"dateTime\\"
       ]
+    },
+    \\"ListerComponent\\": {
+      \\"type\\": \\"array\\",
+      \\"items\\": {
+        \\"anyOf\\": [
+          {
+            \\"$ref\\": \\"#/definitions/TitleComponent\\"
+          },
+          {
+            \\"$ref\\": \\"#/definitions/ImageComponent\\"
+          }
+        ]
+      }
     }
   },
   \\"properties\\": {
@@ -360,6 +405,9 @@ exports[`custom-schema - no decoders schema should match 1`] = `
     },
     \\"Meta\\": {
       \\"$ref\\": \\"#/definitions/Meta\\"
+    },
+    \\"ListerComponent\\": {
+      \\"$ref\\": \\"#/definitions/ListerComponent\\"
     }
   }
 }"
@@ -370,6 +418,7 @@ exports[`custom-schema - standalone ES6 decoders index.ts 1`] = `
 
 export { ScreenDecoder } from \\"./Screen/decoder\\";
 export { ImageComponentDecoder } from \\"./ImageComponent/decoder\\";
+export { ListerComponentDecoder } from \\"./ListerComponent/decoder\\";
 "
 `;
 
@@ -378,8 +427,12 @@ exports[`custom-schema - standalone ES6 merged decoders 1`] = `
 
 import { Decoder } from \\"./helpers\\";
 import { validateJson, Validator } from \\"./validate\\";
-import { Screen, ImageComponent } from \\"./models\\";
-import { ScreenValidator, ImageComponentValidator } from \\"./validators\\";
+import { Screen, ImageComponent, ListerComponent } from \\"./models\\";
+import {
+  ScreenValidator,
+  ImageComponentValidator,
+  ListerComponentValidator,
+} from \\"./validators\\";
 
 export const ScreenDecoder: Decoder<Screen> = {
   definitionName: \\"Screen\\",
@@ -402,6 +455,18 @@ export const ImageComponentDecoder: Decoder<ImageComponent> = {
       json,
       ImageComponentValidator as Validator,
       ImageComponentDecoder.definitionName
+    );
+  },
+};
+export const ListerComponentDecoder: Decoder<ListerComponent> = {
+  definitionName: \\"ListerComponent\\",
+  schemaRef: \\"#/definitions/ListerComponent\\",
+
+  decode(json: unknown): ListerComponent {
+    return validateJson(
+      json,
+      ListerComponentValidator as Validator,
+      ListerComponentDecoder.definitionName
     );
   },
 };
@@ -429,6 +494,7 @@ exports[`custom-schema - standalone ES6 merged models should match 1`] = `
  */
 
 export type Component = TitleComponent | ImageComponent;
+export type ListerComponent = (TitleComponent | ImageComponent)[];
 
 export interface Screen {
   components: Component[];
@@ -547,6 +613,19 @@ exports[`custom-schema - standalone ES6 merged schema should match 1`] = `
       \\"required\\": [
         \\"dateTime\\"
       ]
+    },
+    \\"ListerComponent\\": {
+      \\"type\\": \\"array\\",
+      \\"items\\": {
+        \\"anyOf\\": [
+          {
+            \\"$ref\\": \\"#/definitions/TitleComponent\\"
+          },
+          {
+            \\"$ref\\": \\"#/definitions/ImageComponent\\"
+          }
+        ]
+      }
     }
   },
   \\"properties\\": {
@@ -564,6 +643,9 @@ exports[`custom-schema - standalone ES6 merged schema should match 1`] = `
     },
     \\"Meta\\": {
       \\"$ref\\": \\"#/definitions/Meta\\"
+    },
+    \\"ListerComponent\\": {
+      \\"$ref\\": \\"#/definitions/ListerComponent\\"
     }
   }
 }"
@@ -572,6 +654,7 @@ exports[`custom-schema - standalone ES6 merged schema should match 1`] = `
 exports[`custom-schema - standalone ES6 merged validators.d.ts 1`] = `
 "export function ScreenValidator(json: unknown): boolean;
 export function ImageComponentValidator(json: unknown): boolean;
+export function ListerComponentValidator(json: unknown): boolean;
 "
 `;
 
@@ -585,6 +668,7 @@ exports[`custom-schema - standalone ES6 models should match 1`] = `
  */
 
 export type Component = TitleComponent | ImageComponent;
+export type ListerComponent = (TitleComponent | ImageComponent)[];
 
 export interface Screen {
   components: Component[];
@@ -703,6 +787,19 @@ exports[`custom-schema - standalone ES6 schema should match 1`] = `
       \\"required\\": [
         \\"dateTime\\"
       ]
+    },
+    \\"ListerComponent\\": {
+      \\"type\\": \\"array\\",
+      \\"items\\": {
+        \\"anyOf\\": [
+          {
+            \\"$ref\\": \\"#/definitions/TitleComponent\\"
+          },
+          {
+            \\"$ref\\": \\"#/definitions/ImageComponent\\"
+          }
+        ]
+      }
     }
   },
   \\"properties\\": {
@@ -720,6 +817,9 @@ exports[`custom-schema - standalone ES6 schema should match 1`] = `
     },
     \\"Meta\\": {
       \\"$ref\\": \\"#/definitions/Meta\\"
+    },
+    \\"ListerComponent\\": {
+      \\"$ref\\": \\"#/definitions/ListerComponent\\"
     }
   }
 }"
@@ -753,6 +853,7 @@ exports[`custom-schema - standalone commonjs decoders index.ts 1`] = `
 
 export { ScreenDecoder } from \\"./Screen/decoder\\";
 export { ImageComponentDecoder } from \\"./ImageComponent/decoder\\";
+export { ListerComponentDecoder } from \\"./ListerComponent/decoder\\";
 "
 `;
 
@@ -772,8 +873,12 @@ exports[`custom-schema - standalone commonjs merged decoders 1`] = `
 
 import { Decoder } from \\"./helpers\\";
 import { validateJson, Validator } from \\"./validate\\";
-import { Screen, ImageComponent } from \\"./models\\";
-const { ScreenValidator, ImageComponentValidator } = require(\\"./validators\\");
+import { Screen, ImageComponent, ListerComponent } from \\"./models\\";
+const {
+  ScreenValidator,
+  ImageComponentValidator,
+  ListerComponentValidator,
+} = require(\\"./validators\\");
 
 export const ScreenDecoder: Decoder<Screen> = {
   definitionName: \\"Screen\\",
@@ -796,6 +901,18 @@ export const ImageComponentDecoder: Decoder<ImageComponent> = {
       json,
       ImageComponentValidator as Validator,
       ImageComponentDecoder.definitionName
+    );
+  },
+};
+export const ListerComponentDecoder: Decoder<ListerComponent> = {
+  definitionName: \\"ListerComponent\\",
+  schemaRef: \\"#/definitions/ListerComponent\\",
+
+  decode(json: unknown): ListerComponent {
+    return validateJson(
+      json,
+      ListerComponentValidator as Validator,
+      ListerComponentDecoder.definitionName
     );
   },
 };
@@ -823,6 +940,7 @@ exports[`custom-schema - standalone commonjs merged models should match 1`] = `
  */
 
 export type Component = TitleComponent | ImageComponent;
+export type ListerComponent = (TitleComponent | ImageComponent)[];
 
 export interface Screen {
   components: Component[];
@@ -941,6 +1059,19 @@ exports[`custom-schema - standalone commonjs merged schema should match 1`] = `
       \\"required\\": [
         \\"dateTime\\"
       ]
+    },
+    \\"ListerComponent\\": {
+      \\"type\\": \\"array\\",
+      \\"items\\": {
+        \\"anyOf\\": [
+          {
+            \\"$ref\\": \\"#/definitions/TitleComponent\\"
+          },
+          {
+            \\"$ref\\": \\"#/definitions/ImageComponent\\"
+          }
+        ]
+      }
     }
   },
   \\"properties\\": {
@@ -958,6 +1089,9 @@ exports[`custom-schema - standalone commonjs merged schema should match 1`] = `
     },
     \\"Meta\\": {
       \\"$ref\\": \\"#/definitions/Meta\\"
+    },
+    \\"ListerComponent\\": {
+      \\"$ref\\": \\"#/definitions/ListerComponent\\"
     }
   }
 }"
@@ -973,6 +1107,7 @@ exports[`custom-schema - standalone commonjs models should match 1`] = `
  */
 
 export type Component = TitleComponent | ImageComponent;
+export type ListerComponent = (TitleComponent | ImageComponent)[];
 
 export interface Screen {
   components: Component[];
@@ -1091,6 +1226,19 @@ exports[`custom-schema - standalone commonjs schema should match 1`] = `
       \\"required\\": [
         \\"dateTime\\"
       ]
+    },
+    \\"ListerComponent\\": {
+      \\"type\\": \\"array\\",
+      \\"items\\": {
+        \\"anyOf\\": [
+          {
+            \\"$ref\\": \\"#/definitions/TitleComponent\\"
+          },
+          {
+            \\"$ref\\": \\"#/definitions/ImageComponent\\"
+          }
+        ]
+      }
     }
   },
   \\"properties\\": {
@@ -1108,6 +1256,9 @@ exports[`custom-schema - standalone commonjs schema should match 1`] = `
     },
     \\"Meta\\": {
       \\"$ref\\": \\"#/definitions/Meta\\"
+    },
+    \\"ListerComponent\\": {
+      \\"$ref\\": \\"#/definitions/ListerComponent\\"
     }
   }
 }"
