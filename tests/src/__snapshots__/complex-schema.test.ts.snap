@@ -4,6 +4,7 @@ exports[`complex-schema decoders index.ts 1`] = `
 "/* eslint-disable */
 
 export { ScreenDecoder } from \\"./Screen/decoder\\";
+export { ComponentDecoder } from \\"./Component/decoder\\";
 export { TitleComponentDecoder } from \\"./TitleComponent/decoder\\";
 export { ImageComponentDecoder } from \\"./ImageComponent/decoder\\";
 "

@@ -1,7 +1,7 @@
 import path from "path";
 import fs from "fs";
 import { generate } from "openapi-typescript-validator";
-import Ajv from 'ajv';
+import Ajv from "ajv";
 
 describe("complex-schema", () => {
   const name = "complex";
@@ -9,13 +9,14 @@ describe("complex-schema", () => {
   const schemaDir = path.join(__dirname, "../schemas");
 
   beforeAll(async () => {
-    if (fs.existsSync(generatedDir)) fs.rmdirSync(generatedDir, { recursive: true });
+    if (fs.existsSync(generatedDir))
+      fs.rmdirSync(generatedDir, { recursive: true });
     await generate({
       schemaFile: path.join(schemaDir, "complex-schema.json"),
       schemaType: "json",
       directory: generatedDir,
       standalone: {
-        validatorOutput: 'module',
+        validatorOutput: "module",
       },
     });
   });
@@ -36,6 +37,7 @@ describe("complex-schema", () => {
     test("file structure", () => {
       const dir = fs.readdirSync(decodersDir);
       expect(dir).toEqual([
+        "Component",
         "ImageComponent",
         "Screen",
         "TitleComponent",
@@ -50,10 +52,7 @@ describe("complex-schema", () => {
   });
 
   test("models should match", () => {
-    const file = fs.readFileSync(
-      path.join(generatedDir, `models.ts`),
-      "utf8"
-    );
+    const file = fs.readFileSync(path.join(generatedDir, `models.ts`), "utf8");
     expect(file).not.toBeUndefined();
     expect(file).toMatchSnapshot();
   });
