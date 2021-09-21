@@ -2,6 +2,7 @@ import path from "path";
 import fs from "fs";
 import { generate } from "openapi-typescript-validator";
 import Ajv from 'ajv';
+import spyOn = jest.spyOn;
 
 describe("format-schema - compile based", () => {
   const name = "format";
@@ -17,6 +18,12 @@ describe("format-schema - compile based", () => {
       directory: generatedDir,
       addFormats: true,
     });
+  });
+
+  test("should not generate warnings on import", async () => {
+    const consoleWarnSpy = spyOn(console, 'warn');
+    await import(path.join(generatedDir, 'decoders.ts'));
+    expect(consoleWarnSpy).not.toHaveBeenCalled();
   });
 
   test("files should match", () => {
