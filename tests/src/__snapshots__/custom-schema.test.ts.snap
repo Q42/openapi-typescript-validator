@@ -11,6 +11,7 @@ import { Screen, ImageComponent, ListerComponent } from \\"./models\\";
 import jsonSchema from \\"./schema.json\\";
 
 const ajv = new Ajv({ strict: false });
+
 ajv.compile(jsonSchema);
 
 // Decoders

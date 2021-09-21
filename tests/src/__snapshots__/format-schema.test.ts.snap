@@ -11,8 +11,8 @@ import { User, Price } from \\"./models\\";
 import jsonSchema from \\"./schema.json\\";
 
 const ajv = new Ajv({ strict: false });
-ajv.compile(jsonSchema);
 addFormats(ajv, { mode: \\"fast\\", formats: [\\"date\\", \\"time\\"] });
+ajv.compile(jsonSchema);
 
 // Decoders
 export const UserDecoder: Decoder<User> = {
@@ -53,8 +53,8 @@ import { User, Price } from \\"./models\\";
 import jsonSchema from \\"./schema.json\\";
 
 const ajv = new Ajv({ strict: false });
-ajv.compile(jsonSchema);
 addFormats(ajv, undefined);
+ajv.compile(jsonSchema);
 
 // Decoders
 export const UserDecoder: Decoder<User> = {
