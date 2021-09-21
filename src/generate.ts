@@ -35,7 +35,6 @@ export async function generate(options: GenerateOptions) {
 
   const definitionNames = allDefinitions.filter((name) => {
     const schemaType = schema.definitions[name]?.type;
-    if (schemaType !== "object" && schemaType !== "array") return false;
     return !decoderWhitelistById || decoderWhitelistById[name];
   });
 
