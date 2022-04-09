@@ -37,6 +37,7 @@
     "ajv-formats": "^2.0.0"
   },
   "dependencies": {
+    "@apidevtools/json-schema-ref-parser": "^9.0.9",
     "@openapi-contrib/openapi-schema-to-json-schema": "^3.0.4",
     "ajv": "^8.1.0",
     "ajv-formats": "^2.0.2",

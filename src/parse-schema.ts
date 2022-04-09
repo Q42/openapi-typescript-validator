@@ -1,6 +1,8 @@
 import jsYaml from 'js-yaml'
 import { JSONSchema } from 'json-schema-to-typescript';
+import $RefParser from  '@apidevtools/json-schema-ref-parser';
 import { readFileSync } from 'fs';
+import { dirname } from 'path';
 
 const toJsonSchema = require('@openapi-contrib/openapi-schema-to-json-schema');
 
@@ -12,7 +14,7 @@ export interface ParsedSchema {
   whitelistedDecoders: string[] | undefined;
 }
 
-export function parseSchema(inputFilePath: string, schemaType: SchemaType): ParsedSchema {
+export async function parseSchema(inputFilePath: string, schemaType: SchemaType): Promise<ParsedSchema> {
   switch (schemaType) {
     case 'json':
     case 'yaml':
@@ -22,7 +24,7 @@ export function parseSchema(inputFilePath: string, schemaType: SchemaType): Pars
   }
 }
 
-function parseOpenApiSchema(inputFilePath: string, schemaType: 'yaml' | 'json'): ParsedSchema {
+async function parseOpenApiSchema(inputFilePath: string, schemaType: 'yaml' | 'json'): Promise<ParsedSchema> {
   let schema: any;
 
   const inputFileContent = readFileSync(inputFilePath, 'utf8');
@@ -32,6 +34,14 @@ function parseOpenApiSchema(inputFilePath: string, schemaType: 'yaml' | 'json'):
   } else {
     schema = JSON.parse(inputFileContent);
   }
+
+  // need to change to input file base directory, so relative ref paths can be resolved
+  const originalDirectory = process.cwd();
+  process.chdir(dirname(inputFilePath));
+  // resolve external references to original schema
+  schema = await $RefParser.bundle(schema)
+  // change back to original directory
+  process.chdir(originalDirectory);
 
   const properties: Record<string, any> = {};
   const definitions: Record<string, JSONSchema> = {};
