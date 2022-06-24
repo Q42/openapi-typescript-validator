@@ -1,11 +1,13 @@
 import { format, Options } from "prettier";
 import { mkdirSync, writeFileSync } from "fs";
 import path from "path";
+import { ValidatorOutput } from "../GenerateOptions";
 
 export function generateMetaFile(
   definitionNames: string[],
   outDirs: string[],
-  prettierOptions: Options
+  prettierOptions: Options,
+  esm: boolean
 ): void {
   const metas = definitionNames
     .map((definitionName) => {
@@ -13,7 +15,7 @@ export function generateMetaFile(
     })
     .join("\n");
 
-  const rawOutput = metaTemplate
+  const rawOutput = metaTemplate(esm)
     .replace(/\$Definitions/g, metas)
     .replace(/\$ModelImports/g, definitionNames.join(", "))
 
@@ -25,9 +27,11 @@ export function generateMetaFile(
   });
 }
 
-const metaTemplate = `
+const metaTemplate = (esm: boolean) => {
+  const importExtension = esm ? ".js" : "";
+  return `
 /* eslint-disable */
-import { $ModelImports } from './models';
+import { $ModelImports } from './models${importExtension}';
 
 export const schemaDefinitions = {
   $Definitions
@@ -41,4 +45,5 @@ export interface SchemaInfo<T> {
 function info<T>(definitionName: string, schemaRef: string): SchemaInfo<T> {
   return { definitionName, schemaRef };
 }
-`;
+`
+}

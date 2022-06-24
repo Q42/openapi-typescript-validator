@@ -71,4 +71,9 @@ export interface GenerateOptions {
    * don't output decoder files
    */
   skipDecoders?: boolean;
+
+  /**
+   * use in combination with validator output module to add .js extension to imports of generated files
+   */
+  esm?: boolean;
 }

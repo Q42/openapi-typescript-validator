@@ -56,6 +56,7 @@ export async function generate(options: GenerateOptions) {
         options.addFormats ?? false,
         options.formatOptions,
         options.standalone.validatorOutput,
+        options.esm ?? false,
         directories,
         prettierOptions
       );
@@ -66,6 +67,7 @@ export async function generate(options: GenerateOptions) {
         options.addFormats ?? false,
         options.formatOptions,
         options.standalone.validatorOutput,
+        options.esm ?? false,
         directories,
         prettierOptions
       );
@@ -81,7 +83,7 @@ export async function generate(options: GenerateOptions) {
   generateHelpers(prettierOptions, directories);
 
   if (options.skipMetaFile !== true) {
-    generateMetaFile(allDefinitions, directories, prettierOptions);
+    generateMetaFile(allDefinitions, directories, prettierOptions, options.esm ?? false);
   }
 
   console.info(`Successfully generated files for ${schemaFile}`);
