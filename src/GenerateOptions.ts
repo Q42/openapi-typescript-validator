@@ -71,4 +71,9 @@ export interface GenerateOptions {
    * don't output decoder files
    */
   skipDecoders?: boolean;
+
+  /**
+   * when this option is enabled, standaloneOptions.validatorOutput is automatically set to "module"
+   */
+  esm?: boolean;
 }

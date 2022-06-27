@@ -5,7 +5,7 @@ import addFormats, { FormatsPluginOptions } from "ajv-formats";
 import standaloneCode from "ajv/dist/standalone";
 import { mkdirSync, writeFileSync } from "fs";
 import * as path from "path";
-import { ValidatorOutput } from "../GenerateOptions";
+import { GenerateOptions, ValidatorOutput } from "../GenerateOptions";
 import { createDecoderName, createValidatorName } from "./generation-utils";
 
 export function generateStandaloneDecoders(
@@ -14,6 +14,7 @@ export function generateStandaloneDecoders(
   addFormats: boolean,
   formatOptions: FormatsPluginOptions | undefined,
   output: ValidatorOutput,
+  esm: boolean,
   outDirs: string[],
   prettierOptions: Options
 ): void {
@@ -32,12 +33,9 @@ export function generateStandaloneDecoders(
       prettierOptions
     );
 
-    const validatorImportStatement =
-      output === "module"
-        ? `import { ${validatorName} } from './validator'`
-        : `const { ${validatorName} } = require("./validator")`;
+    const validatorImportStatement = createValidatorImportStatement(validatorName, output, false, esm);
 
-    let rawDecoderOutput = decoderFileTemplate
+    let rawDecoderOutput = decoderFileTemplate(esm)
       .replace(/\$DecoderName/g, decoderName)
       .replace(/\$Class/g, definitionName)
       .replace(/\$ValidatorImports/g, validatorImportStatement)
@@ -51,7 +49,7 @@ export function generateStandaloneDecoders(
     );
 
     indexExports.push(
-      `export { ${decoderName} } from './${definitionName}/decoder';`
+      `export { ${decoderName} } from './${definitionName}/decoder${esm ? ".js" : ""}';`
     );
 
     outDirs.forEach((outDir) => {
@@ -91,6 +89,7 @@ export function generateStandaloneMergedDecoders(
   addFormats: boolean,
   formatOptions: FormatsPluginOptions | undefined,
   output: ValidatorOutput,
+  esm: boolean,
   outDirs: string[],
   prettierOptions: Options
 ) {
@@ -108,12 +107,9 @@ export function generateStandaloneMergedDecoders(
     .map((d) => createValidatorName(d))
     .join(", ");
 
-  const validatorImportStatement =
-    output === "module"
-      ? `import { ${validatorImports} } from './validators';`
-      : `const { ${validatorImports} } = require("./validators")`;
+  const validatorImportStatement = createValidatorImportStatement(validatorImports, output, true, esm);
 
-  const rawDecoderOutput = mergedDecodersFileTemplate
+  const rawDecoderOutput = mergedDecodersFileTemplate(esm)
     .replace(/\$ValidatorImports/g, validatorImportStatement)
     .replace(/\$ModelImports/g, definitionNames.join(", "))
     .replace(/\$Decoders/g, decoders);
@@ -149,6 +145,22 @@ export function generateStandaloneMergedDecoders(
     }
   });
 }
+
+
+function createValidatorImportStatement(validatorImportString: string, output: ValidatorOutput, merged: boolean, esm: boolean) {
+  const fileName = merged ? 'validators' : 'validator';
+  switch (output) {
+    case 'commonjs':
+      return `const { ${validatorImportString} } = require("./${fileName}")`
+    case 'module':
+      if (esm) {
+        return `import { ${validatorImportString} } from './${fileName}.js'`
+      } else {
+        return `import { ${validatorImportString} } from './${fileName}'`
+      }
+  }
+}
+
 
 function standAloneValidatorOutput(
   schema: ParsedSchema,
@@ -223,16 +235,19 @@ export const $DecoderName: Decoder<$Class> = {
 }
 `;
 
-const decoderFileTemplate = `
-/* eslint-disable */
+const decoderFileTemplate = (esm: boolean) => {
+  const importExtension = esm ? ".js" : "";
+  return `
+  /* eslint-disable */
 
-import { Decoder } from '../../helpers';
-import { validateJson, Validator } from '../../validate';
-import { $Class } from '../../models';
-$ValidatorImports
+  import { Decoder } from '../../helpers${importExtension}';
+  import { validateJson, Validator } from '../../validate${importExtension}';
+  import { $Class } from '../../models${importExtension}';
+  $ValidatorImports
 
-${decoderTemplate}
-`;
+  ${decoderTemplate}
+  `
+}
 
 const decodersFileTemplate = `
 /* eslint-disable */
@@ -240,13 +255,16 @@ const decodersFileTemplate = `
 $Exports
 `;
 
-const mergedDecodersFileTemplate = `
-/* eslint-disable */
-
-import { Decoder } from './helpers';
-import { validateJson, Validator } from './validate';
-import { $ModelImports } from './models';
-$ValidatorImports
-
-$Decoders
-`;
+const mergedDecodersFileTemplate = (esm: boolean) => {
+  const importExtension = esm ? ".js" : "";
+  return `
+  /* eslint-disable */
+  
+  import { Decoder } from './helpers${importExtension}';
+  import { validateJson, Validator } from './validate${importExtension}';
+  import { $ModelImports } from './models${importExtension}';
+  $ValidatorImports
+  
+  $Decoders
+  `
+};
