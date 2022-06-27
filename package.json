@@ -1,6 +1,6 @@
 {
   "name": "openapi-typescript-validator",
-  "version": "3.3.0-alpha",
+  "version": "3.2.0",
   "description": "Generate typescript with ajv validation based on openapi schemas",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
