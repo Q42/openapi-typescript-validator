@@ -73,7 +73,7 @@ export interface GenerateOptions {
   skipDecoders?: boolean;
 
   /**
-   * use in combination with validator output module to add .js extension to imports of generated files
+   * when this option is enabled, standaloneOptions.validatorOutput is automatically set to "module"
    */
   esm?: boolean;
 }
