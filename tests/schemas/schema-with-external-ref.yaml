@@ -1,0 +1,6 @@
+components:
+  schemas:
+    UserList:
+      type: array
+      items:
+        $ref: './user.yaml#/definitions/User'
