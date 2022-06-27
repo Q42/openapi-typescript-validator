@@ -55,7 +55,7 @@ export async function generate(options: GenerateOptions) {
         schema,
         options.addFormats ?? false,
         options.formatOptions,
-        options.standalone.validatorOutput,
+        options.esm ? "module" : options.standalone.validatorOutput,
         options.esm ?? false,
         directories,
         prettierOptions
@@ -66,7 +66,7 @@ export async function generate(options: GenerateOptions) {
         schema,
         options.addFormats ?? false,
         options.formatOptions,
-        options.standalone.validatorOutput,
+        options.esm ? "module" : options.standalone.validatorOutput,
         options.esm ?? false,
         directories,
         prettierOptions
