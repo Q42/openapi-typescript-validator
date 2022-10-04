@@ -55,9 +55,9 @@ import { validateJson } from './validate';
 import { $ModelImports } from './models';
 import jsonSchema from './schema.json';
 
-const ajv = new Ajv({ strict: false });
-ajv.compile(jsonSchema);
+export const ajv = new Ajv({ strict: false });
 $Formats
+ajv.compile(jsonSchema);
 
 // Decoders
 $Decoders
