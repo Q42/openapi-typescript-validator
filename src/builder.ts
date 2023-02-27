@@ -20,7 +20,7 @@ type PropertyBaseOptions = Pick<
 
 type ObjectBaseOptions = Pick<
   JSONSchema,
-  "title" | "description" | "default"
+  "title" | "description" | "default" | "additionalProperties"
 >;
 
 type ArrayOptions = PropertyBaseOptions;
