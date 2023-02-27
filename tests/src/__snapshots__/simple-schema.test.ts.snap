@@ -220,9 +220,8 @@ export function validateJson(
     return jsonObject;
   }
 
-  const jsonPreviewStr = (typeof json === \\"string\\"
-    ? json
-    : JSON.stringify(jsonObject)
+  const jsonPreviewStr = (
+    typeof json === \\"string\\" ? json : JSON.stringify(jsonObject)
   ).substring(0, 200);
   if (validator.errors) {
     throw Error(

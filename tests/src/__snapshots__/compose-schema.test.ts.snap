@@ -32,6 +32,11 @@ export interface BarComponent {
   type: \\"bar\\";
   name: string;
 }
+export interface BazComponent {
+  type: \\"baz\\";
+  name: string;
+  [k: string]: string;
+}
 "
 `;
 
@@ -97,6 +102,27 @@ exports[`compose-schema schema should match 1`] = `
         \\"name\\"
       ]
     },
+    \\"BazComponent\\": {
+      \\"type\\": \\"object\\",
+      \\"properties\\": {
+        \\"type\\": {
+          \\"type\\": \\"string\\",
+          \\"enum\\": [
+            \\"baz\\"
+          ]
+        },
+        \\"name\\": {
+          \\"type\\": \\"string\\"
+        }
+      },
+      \\"required\\": [
+        \\"type\\",
+        \\"name\\"
+      ],
+      \\"additionalProperties\\": {
+        \\"type\\": \\"string\\"
+      }
+    },
     \\"AnyComponent\\": {
       \\"anyOf\\": [
         {
@@ -117,6 +143,9 @@ exports[`compose-schema schema should match 1`] = `
     },
     \\"BarComponent\\": {
       \\"$ref\\": \\"#/definitions/BarComponent\\"
+    },
+    \\"BazComponent\\": {
+      \\"$ref\\": \\"#/definitions/BazComponent\\"
     },
     \\"AnyComponent\\": {
       \\"$ref\\": \\"#/definitions/AnyComponent\\"

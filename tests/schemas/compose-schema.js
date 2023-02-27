@@ -30,6 +30,11 @@ types.BarComponent = compose(
   })
 );
 
+types.BazComponent = object({
+  type: constant("baz"),
+  name: string(),
+}, {additionalProperties: string()})
+
 types.AnyComponent = anyOf(["BarComponent", "FooComponent"]);
 
 module.exports = { types };
