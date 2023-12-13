@@ -3,20 +3,20 @@
 exports[`simple-schema decoders UserDecoder decoder 1`] = `
 "/* eslint-disable */
 
-import { Decoder } from \\"../../helpers\\";
-import { validateJson, Validator } from \\"../../validate\\";
-import { User } from \\"../../models\\";
-import { UserValidator } from \\"./validator\\";
+import { Decoder } from "../../helpers";
+import { validateJson, Validator } from "../../validate";
+import { User } from "../../models";
+import { UserValidator } from "./validator";
 
 export const UserDecoder: Decoder<User> = {
-  definitionName: \\"User\\",
-  schemaRef: \\"#/definitions/User\\",
+  definitionName: "User",
+  schemaRef: "#/definitions/User",
 
   decode(json: unknown): User {
     return validateJson(
       json,
       UserValidator as Validator,
-      UserDecoder.definitionName
+      UserDecoder.definitionName,
     );
   },
 };
@@ -31,45 +31,45 @@ exports[`simple-schema decoders UserDecoder validator.d.ts 1`] = `
 exports[`simple-schema decoders UserDecoder validator.js 1`] = `
 "/* eslint-disable */
 
-\\"use strict\\";
+"use strict";
 export const UserValidator = validate11;
 const schema12 = {
-  type: \\"object\\",
-  properties: { id: { type: \\"string\\" }, name: { type: \\"string\\" } },
-  required: [\\"id\\"],
-  $schema: \\"http://json-schema.org/draft-04/schema#\\",
+  type: "object",
+  properties: { id: { type: "string" }, name: { type: "string" } },
+  required: ["id"],
+  $schema: "http://json-schema.org/draft-04/schema#",
 };
 function validate11(
   data,
-  { instancePath = \\"\\", parentData, parentDataProperty, rootData = data } = {}
+  { instancePath = "", parentData, parentDataProperty, rootData = data } = {},
 ) {
   let vErrors = null;
   let errors = 0;
   if (errors === 0) {
-    if (data && typeof data == \\"object\\" && !Array.isArray(data)) {
+    if (data && typeof data == "object" && !Array.isArray(data)) {
       let missing0;
-      if (data.id === undefined && (missing0 = \\"id\\")) {
+      if (data.id === undefined && (missing0 = "id")) {
         validate11.errors = [
           {
             instancePath,
-            schemaPath: \\"#/required\\",
-            keyword: \\"required\\",
+            schemaPath: "#/required",
+            keyword: "required",
             params: { missingProperty: missing0 },
-            message: \\"must have required property '\\" + missing0 + \\"'\\",
+            message: "must have required property '" + missing0 + "'",
           },
         ];
         return false;
       } else {
         if (data.id !== undefined) {
           const _errs1 = errors;
-          if (typeof data.id !== \\"string\\") {
+          if (typeof data.id !== "string") {
             validate11.errors = [
               {
-                instancePath: instancePath + \\"/id\\",
-                schemaPath: \\"#/properties/id/type\\",
-                keyword: \\"type\\",
-                params: { type: \\"string\\" },
-                message: \\"must be string\\",
+                instancePath: instancePath + "/id",
+                schemaPath: "#/properties/id/type",
+                keyword: "type",
+                params: { type: "string" },
+                message: "must be string",
               },
             ];
             return false;
@@ -81,14 +81,14 @@ function validate11(
         if (valid0) {
           if (data.name !== undefined) {
             const _errs3 = errors;
-            if (typeof data.name !== \\"string\\") {
+            if (typeof data.name !== "string") {
               validate11.errors = [
                 {
-                  instancePath: instancePath + \\"/name\\",
-                  schemaPath: \\"#/properties/name/type\\",
-                  keyword: \\"type\\",
-                  params: { type: \\"string\\" },
-                  message: \\"must be string\\",
+                  instancePath: instancePath + "/name",
+                  schemaPath: "#/properties/name/type",
+                  keyword: "type",
+                  params: { type: "string" },
+                  message: "must be string",
                 },
               ];
               return false;
@@ -103,10 +103,10 @@ function validate11(
       validate11.errors = [
         {
           instancePath,
-          schemaPath: \\"#/type\\",
-          keyword: \\"type\\",
-          params: { type: \\"object\\" },
-          message: \\"must be object\\",
+          schemaPath: "#/type",
+          keyword: "type",
+          params: { type: "object" },
+          message: "must be object",
         },
       ];
       return false;
@@ -121,7 +121,7 @@ function validate11(
 exports[`simple-schema decoders index.ts 1`] = `
 "/* eslint-disable */
 
-export { UserDecoder } from \\"./User/decoder\\";
+export { UserDecoder } from "./User/decoder";
 "
 `;
 
@@ -138,10 +138,10 @@ export interface Decoder<T> {
 
 exports[`simple-schema meta.ts 1`] = `
 "/* eslint-disable */
-import { User } from \\"./models\\";
+import { User } from "./models";
 
 export const schemaDefinitions = {
-  User: info<User>(\\"User\\", \\"#/definitions/User\\"),
+  User: info<User>("User", "#/definitions/User"),
 };
 
 export interface SchemaInfo<T> {
@@ -173,28 +173,28 @@ export interface User {
 
 exports[`simple-schema schema should match 1`] = `
 "{
-  \\"type\\": \\"object\\",
-  \\"title\\": \\"Schema\\",
-  \\"definitions\\": {
-    \\"User\\": {
-      \\"type\\": \\"object\\",
-      \\"properties\\": {
-        \\"id\\": {
-          \\"type\\": \\"string\\"
+  "type": "object",
+  "title": "Schema",
+  "definitions": {
+    "User": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
         },
-        \\"name\\": {
-          \\"type\\": \\"string\\"
+        "name": {
+          "type": "string"
         }
       },
-      \\"required\\": [
-        \\"id\\"
+      "required": [
+        "id"
       ],
-      \\"$schema\\": \\"http://json-schema.org/draft-04/schema#\\"
+      "$schema": "http://json-schema.org/draft-04/schema#"
     }
   },
-  \\"properties\\": {
-    \\"User\\": {
-      \\"$ref\\": \\"#/definitions/User\\"
+  "properties": {
+    "User": {
+      "$ref": "#/definitions/User"
     }
   }
 }"
@@ -202,7 +202,7 @@ exports[`simple-schema schema should match 1`] = `
 
 exports[`simple-schema validate.ts 1`] = `
 "/* eslint-disable */
-import type { ErrorObject } from \\"ajv\\";
+import type { ErrorObject } from "ajv";
 
 export interface Validator {
   (json: unknown): boolean;
@@ -212,35 +212,34 @@ export interface Validator {
 export function validateJson(
   json: any,
   validator: Validator,
-  definitionName: string
+  definitionName: string,
 ): any {
-  const jsonObject = typeof json === \\"string\\" ? JSON.parse(json) : json;
+  const jsonObject = typeof json === "string" ? JSON.parse(json) : json;
 
   if (validator(jsonObject)) {
     return jsonObject;
   }
 
-  const jsonPreviewStr = (typeof json === \\"string\\"
-    ? json
-    : JSON.stringify(jsonObject)
+  const jsonPreviewStr = (
+    typeof json === "string" ? json : JSON.stringify(jsonObject)
   ).substring(0, 200);
   if (validator.errors) {
     throw Error(
       \`\${definitionName} \${errorsText(
-        validator.errors
-      )}. JSON: \${jsonPreviewStr}\`
+        validator.errors,
+      )}. JSON: \${jsonPreviewStr}\`,
     );
   }
 
   throw Error(
-    \`\${definitionName} Unexpected data received. JSON: \${jsonPreviewStr}\`
+    \`\${definitionName} Unexpected data received. JSON: \${jsonPreviewStr}\`,
   );
 }
 
 function errorsText(errors: ErrorObject[]): string {
   return errors
     .map((error) => \`\${error.instancePath}: \${error.message}\`)
-    .join(\\"\\\\n\\");
+    .join("\\n");
 }
 "
 `;
