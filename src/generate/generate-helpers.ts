@@ -2,11 +2,11 @@ import { format, Options } from "prettier";
 import { writeFileSync, mkdirSync } from "fs";
 import path from "path";
 
-export function generateHelpers(
+export async function generateHelpers(
   prettierOptions: Options,
   outDirs: string[]
 ) {
-  const helpers = format(helpersTemplate, prettierOptions);
+  const helpers = await format(helpersTemplate, prettierOptions);
 
   outDirs.forEach((outDir) => {
     mkdirSync(outDir, { recursive: true });

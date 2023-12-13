@@ -3,12 +3,12 @@ import { mkdirSync, writeFileSync } from "fs";
 import path from "path";
 import { ValidatorOutput } from "../GenerateOptions";
 
-export function generateMetaFile(
+export async function generateMetaFile(
   definitionNames: string[],
   outDirs: string[],
   prettierOptions: Options,
   esm: boolean
-): void {
+): Promise<void> {
   const metas = definitionNames
     .map((definitionName) => {
       return `${definitionName}: info<${definitionName}>('${definitionName}', '#/definitions/${definitionName}'),`;
@@ -17,9 +17,9 @@ export function generateMetaFile(
 
   const rawOutput = metaTemplate(esm)
     .replace(/\$Definitions/g, metas)
-    .replace(/\$ModelImports/g, definitionNames.join(", "))
+    .replace(/\$ModelImports/g, definitionNames.join(", "));
 
-  const output = format(rawOutput, prettierOptions);
+  const output = await format(rawOutput, prettierOptions);
 
   outDirs.forEach((outDir) => {
     mkdirSync(outDir, { recursive: true });
@@ -45,5 +45,5 @@ export interface SchemaInfo<T> {
 function info<T>(definitionName: string, schemaRef: string): SchemaInfo<T> {
   return { definitionName, schemaRef };
 }
-`
-}
+`;
+};
