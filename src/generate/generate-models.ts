@@ -34,6 +34,5 @@ export async function generateModels(
 }
 
 const modelsFileTemplate = `
-/* eslint-disable */
 $Models
 `;
