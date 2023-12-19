@@ -4,16 +4,16 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Setup NodeJS
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v4
         with:
-          node-version: '12.x'
+          node-version: '18.x'
       - name: Install modules
-        run: npm install
+        run: npm ci
       - name: Build
         run: npm run build
       - name: Install Test modules
-        run: (cd tests && npm install)
+        run: (cd tests && npm ci)
       - name: Run tests
         run: npm test
