@@ -4,26 +4,26 @@ import path from "path";
 import { createDecoderName } from "./generation-utils";
 import { FormatsPluginOptions } from "ajv-formats";
 
-export function generateCompileBasedDecoders(
+export async function generateCompileBasedDecoders(
   definitionNames: string[],
   addFormats: boolean,
   formatOptions: FormatsPluginOptions | undefined,
   outDirs: string[],
-  prettierOptions: Options
-): void {
+  prettierOptions: Options,
+): Promise<void> {
   const decoders = definitionNames
     .map((definitionName) =>
       decoderTemplate
         .replace(/\$DecoderName/g, createDecoderName(definitionName))
         .replace(/\$Class/g, definitionName)
-        .trim()
+        .trim(),
     )
     .join("\n");
 
   const rawDecoderOutput = decodersFileTemplate
     .replace(
       /\$Imports/g,
-      addFormats ? 'import addFormats from "ajv-formats"' : ""
+      addFormats ? 'import addFormats from "ajv-formats"' : "",
     )
     .replace(
       /\$Formats/g,
@@ -31,12 +31,12 @@ export function generateCompileBasedDecoders(
         ? `addFormats(ajv, ${
             formatOptions ? JSON.stringify(formatOptions) : "undefined"
           });`
-        : ""
+        : "",
     )
     .replace(/\$ModelImports/g, definitionNames.join(", "))
     .replace(/\$Decoders/g, decoders);
 
-  const decoderOutput = format(rawDecoderOutput, prettierOptions);
+  const decoderOutput = await format(rawDecoderOutput, prettierOptions);
 
   outDirs.forEach((outDir) => {
     mkdirSync(outDir, { recursive: true });

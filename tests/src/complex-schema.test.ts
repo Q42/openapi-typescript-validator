@@ -2,6 +2,7 @@ import path from "path";
 import fs from "fs";
 import { generate } from "openapi-typescript-validator";
 import Ajv from "ajv";
+import { describe, beforeAll, it, expect } from "vitest";
 
 describe("complex-schema", () => {
   const name = "complex";
@@ -21,10 +22,10 @@ describe("complex-schema", () => {
     });
   });
 
-  test("schema should match", async () => {
+  it("schema should match", async () => {
     const file = fs.readFileSync(
       path.join(generatedDir, `schema.json`),
-      "utf8"
+      "utf8",
     );
     expect(file).not.toBeUndefined();
     expect(file).toMatchSnapshot();
@@ -34,7 +35,7 @@ describe("complex-schema", () => {
   describe("decoders", () => {
     const decodersDir = path.join(generatedDir, `decoders`);
 
-    test("file structure", () => {
+    it("file structure", () => {
       const dir = fs.readdirSync(decodersDir);
       expect(dir).toEqual([
         "Component",
@@ -45,13 +46,13 @@ describe("complex-schema", () => {
       ]);
     });
 
-    test("index.ts", () => {
+    it("index.ts", () => {
       const file = fs.readFileSync(path.join(decodersDir, `index.ts`), "utf8");
       expect(file).toMatchSnapshot();
     });
   });
 
-  test("models should match", () => {
+  it("models should match", () => {
     const file = fs.readFileSync(path.join(generatedDir, `models.ts`), "utf8");
     expect(file).not.toBeUndefined();
     expect(file).toMatchSnapshot();

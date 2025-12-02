@@ -1,6 +1,6 @@
 import keyby from "lodash.keyby";
 import { parseSchema } from "./parse-schema";
-import { GenerateOptions } from "./GenerateOptions";
+import type { GenerateOptions } from "./GenerateOptions";
 import { generateMetaFile } from "./generate/generate-meta";
 import { generateCompileBasedDecoders } from "./generate/generate-compile-decoders";
 import {
@@ -21,7 +21,7 @@ export async function generate(options: GenerateOptions) {
       : options.directory;
 
   console.info(
-    `Start generating files for ${schemaType} schema: ${schemaFile}`
+    `Start generating files for ${schemaType} schema: ${schemaFile}`,
   );
 
   const schema = await parseSchema(schemaFile, schemaType);
@@ -39,18 +39,18 @@ export async function generate(options: GenerateOptions) {
   });
 
   if (options.skipDecoders !== true && definitionNames.length > 0) {
-    generateAjvValidator(prettierOptions, directories);
+    await generateAjvValidator(prettierOptions, directories);
 
     if (!options.standalone) {
-      generateCompileBasedDecoders(
+      await generateCompileBasedDecoders(
         definitionNames,
         options.addFormats ?? false,
         options.formatOptions,
         directories,
-        prettierOptions
+        prettierOptions,
       );
     } else if (options.standalone.mergeDecoders === true) {
-      generateStandaloneMergedDecoders(
+      await generateStandaloneMergedDecoders(
         definitionNames,
         schema,
         options.addFormats ?? false,
@@ -58,10 +58,10 @@ export async function generate(options: GenerateOptions) {
         options.esm ? "module" : options.standalone.validatorOutput,
         options.esm ?? false,
         directories,
-        prettierOptions
+        prettierOptions,
       );
     } else {
-      generateStandaloneDecoders(
+      await generateStandaloneDecoders(
         definitionNames,
         schema,
         options.addFormats ?? false,
@@ -69,7 +69,7 @@ export async function generate(options: GenerateOptions) {
         options.esm ? "module" : options.standalone.validatorOutput,
         options.esm ?? false,
         directories,
-        prettierOptions
+        prettierOptions,
       );
     }
   }
@@ -78,12 +78,17 @@ export async function generate(options: GenerateOptions) {
     schema,
     { skipSchemaFile: options.skipSchemaFile },
     prettierOptions,
-    directories
+    directories,
   );
-  generateHelpers(prettierOptions, directories);
+  await generateHelpers(prettierOptions, directories);
 
   if (options.skipMetaFile !== true) {
-    generateMetaFile(allDefinitions, directories, prettierOptions, options.esm ?? false);
+    await generateMetaFile(
+      allDefinitions,
+      directories,
+      prettierOptions,
+      options.esm ?? false,
+    );
   }
 
   console.info(`Successfully generated files for ${schemaFile}`);

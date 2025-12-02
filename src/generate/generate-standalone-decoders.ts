@@ -8,7 +8,7 @@ import * as path from "path";
 import { GenerateOptions, ValidatorOutput } from "../GenerateOptions";
 import { createDecoderName, createValidatorName } from "./generation-utils";
 
-export function generateStandaloneDecoders(
+export async function generateStandaloneDecoders(
   definitionNames: string[],
   schema: ParsedSchema,
   addFormats: boolean,
@@ -16,24 +16,29 @@ export function generateStandaloneDecoders(
   output: ValidatorOutput,
   esm: boolean,
   outDirs: string[],
-  prettierOptions: Options
-): void {
+  prettierOptions: Options,
+): Promise<void> {
   const indexExports: string[] = [];
 
-  definitionNames.forEach((definitionName) => {
+  for (const definitionName of definitionNames) {
     const validatorName = createValidatorName(definitionName);
     const decoderName = createDecoderName(definitionName);
 
-    const validatorsOutput = standAloneValidatorOutput(
+    const validatorsOutput = await standAloneValidatorOutput(
       schema,
       [definitionName],
       addFormats,
       formatOptions,
       output,
-      prettierOptions
+      prettierOptions,
     );
 
-    const validatorImportStatement = createValidatorImportStatement(validatorName, output, false, esm);
+    const validatorImportStatement = createValidatorImportStatement(
+      validatorName,
+      output,
+      false,
+      esm,
+    );
 
     let rawDecoderOutput = decoderFileTemplate(esm)
       .replace(/\$DecoderName/g, decoderName)
@@ -41,15 +46,15 @@ export function generateStandaloneDecoders(
       .replace(/\$ValidatorImports/g, validatorImportStatement)
       .replace(/\$ValidatorName/g, validatorName);
 
-    const decoderOutput = format(rawDecoderOutput, prettierOptions);
+    const decoderOutput = await format(rawDecoderOutput, prettierOptions);
 
-    const validatorDefinitions = validatorDefinitionsOutput(
+    const validatorDefinitions = await validatorDefinitionsOutput(
       [definitionName],
-      prettierOptions
+      prettierOptions,
     );
 
     indexExports.push(
-      `export { ${decoderName} } from './${definitionName}/decoder${esm ? ".js" : ""}';`
+      `export { ${decoderName} } from './${definitionName}/decoder${esm ? ".js" : ""}';`,
     );
 
     outDirs.forEach((outDir) => {
@@ -62,18 +67,18 @@ export function generateStandaloneDecoders(
       if (output === "module") {
         writeFileSync(
           path.join(decoderDir, `validator.d.ts`),
-          validatorDefinitions
+          validatorDefinitions,
         );
       }
     });
-  });
+  }
 
   const indexOutputRaw = decodersFileTemplate.replace(
     /\$Exports/gm,
-    indexExports.join("\n")
+    indexExports.join("\n"),
   );
 
-  const indexOutput = format(indexOutputRaw, prettierOptions);
+  const indexOutput = await format(indexOutputRaw, prettierOptions);
 
   outDirs.forEach((outDir) => {
     const decoderDir = path.join(outDir, "decoders");
@@ -83,7 +88,7 @@ export function generateStandaloneDecoders(
   });
 }
 
-export function generateStandaloneMergedDecoders(
+export async function generateStandaloneMergedDecoders(
   definitionNames: string[],
   schema: ParsedSchema,
   addFormats: boolean,
@@ -91,7 +96,7 @@ export function generateStandaloneMergedDecoders(
   output: ValidatorOutput,
   esm: boolean,
   outDirs: string[],
-  prettierOptions: Options
+  prettierOptions: Options,
 ) {
   const decoders = definitionNames
     .map((definitionName) =>
@@ -99,7 +104,7 @@ export function generateStandaloneMergedDecoders(
         .replace(/\$DecoderName/g, createDecoderName(definitionName))
         .replace(/\$Class/g, definitionName)
         .replace(/\$ValidatorName/g, createValidatorName(definitionName))
-        .trim()
+        .trim(),
     )
     .join("\n");
 
@@ -107,31 +112,38 @@ export function generateStandaloneMergedDecoders(
     .map((d) => createValidatorName(d))
     .join(", ");
 
-  const validatorImportStatement = createValidatorImportStatement(validatorImports, output, true, esm);
+  const validatorImportStatement = createValidatorImportStatement(
+    validatorImports,
+    output,
+    true,
+    esm,
+  );
 
   const rawDecoderOutput = mergedDecodersFileTemplate(esm)
     .replace(/\$ValidatorImports/g, validatorImportStatement)
     .replace(/\$ModelImports/g, definitionNames.join(", "))
     .replace(/\$Decoders/g, decoders);
 
-  const decoderOutput = format(rawDecoderOutput, prettierOptions);
+  const decoderOutput = await format(rawDecoderOutput, prettierOptions);
+
+  const validatorOutput = await standAloneValidatorOutput(
+    schema,
+    definitionNames,
+    addFormats,
+    formatOptions,
+    output,
+    prettierOptions,
+  );
 
   const rawValidatorsOutput = validatorsFileTemplate.replace(
     /\$Validators/g,
-    standAloneValidatorOutput(
-      schema,
-      definitionNames,
-      addFormats,
-      formatOptions,
-      output,
-      prettierOptions
-    )
+    validatorOutput,
   );
 
-  const validatorsOutput = format(rawValidatorsOutput, prettierOptions);
-  const validatorDefinitions = validatorDefinitionsOutput(
+  const validatorsOutput = await format(rawValidatorsOutput, prettierOptions);
+  const validatorDefinitions = await validatorDefinitionsOutput(
     definitionNames,
-    prettierOptions
+    prettierOptions,
   );
 
   outDirs.forEach((outDir) => {
@@ -146,31 +158,34 @@ export function generateStandaloneMergedDecoders(
   });
 }
 
-
-function createValidatorImportStatement(validatorImportString: string, output: ValidatorOutput, merged: boolean, esm: boolean) {
-  const fileName = merged ? 'validators' : 'validator';
+function createValidatorImportStatement(
+  validatorImportString: string,
+  output: ValidatorOutput,
+  merged: boolean,
+  esm: boolean,
+) {
+  const fileName = merged ? "validators" : "validator";
   switch (output) {
-    case 'commonjs':
-      return `const { ${validatorImportString} } = require("./${fileName}")`
-    case 'module':
+    case "commonjs":
+      return `const { ${validatorImportString} } = require("./${fileName}")`;
+    case "module":
       if (esm) {
-        return `import { ${validatorImportString} } from './${fileName}.js'`
+        return `import { ${validatorImportString} } from './${fileName}.js'`;
       } else {
-        return `import { ${validatorImportString} } from './${fileName}'`
+        return `import { ${validatorImportString} } from './${fileName}'`;
       }
   }
 }
 
-
-function standAloneValidatorOutput(
+async function standAloneValidatorOutput(
   schema: ParsedSchema,
   definitions: string[],
   formats: boolean,
   formatOptions: FormatsPluginOptions | undefined,
   output: ValidatorOutput,
-  prettierOptions: Options
-): string {
-  const ajv = new Ajv({ code: { source: true }, strict: false });
+  prettierOptions: Options,
+): Promise<string> {
+  const ajv = new Ajv({ code: { source: true, esm: true }, strict: false });
   if (formats) {
     addFormats(ajv, formatOptions);
   }
@@ -178,12 +193,11 @@ function standAloneValidatorOutput(
 
   const refs = definitions.reduce<Record<string, string>>(
     (acc, definitionName) => {
-      acc[
-        createValidatorName(definitionName)
-      ] = `#/definitions/${definitionName}`;
+      acc[createValidatorName(definitionName)] =
+        `#/definitions/${definitionName}`;
       return acc;
     },
-    {}
+    {},
   );
 
   let jsOutput = standaloneCode(ajv, refs);
@@ -191,27 +205,27 @@ function standAloneValidatorOutput(
   if (output === "module") {
     jsOutput = jsOutput.replace(
       /exports\.(\w+Validator) = (\w+)/gm,
-      "export const $1 = $2"
+      "export const $1 = $2",
     );
   }
 
   const rawValidatorsOutput = validatorsFileTemplate.replace(
     /\$Validators/g,
-    jsOutput
+    jsOutput,
   );
 
-  const validatorsOutput = format(rawValidatorsOutput, prettierOptions);
+  const validatorsOutput = await format(rawValidatorsOutput, prettierOptions);
   return validatorsOutput;
 }
 
 function validatorDefinitionsOutput(
   definitions: string[],
-  prettierOptions: Options
-) {
+  prettierOptions: Options,
+): Promise<string> {
   const raw = definitions
     .map(
       (d) =>
-        `export function ${createValidatorName(d)}(json: unknown): boolean;`
+        `export function ${createValidatorName(d)}(json: unknown): boolean;`,
     )
     .join("\n");
 
@@ -246,8 +260,8 @@ const decoderFileTemplate = (esm: boolean) => {
   $ValidatorImports
 
   ${decoderTemplate}
-  `
-}
+  `;
+};
 
 const decodersFileTemplate = `
 /* eslint-disable */
@@ -266,5 +280,5 @@ const mergedDecodersFileTemplate = (esm: boolean) => {
   $ValidatorImports
   
   $Decoders
-  `
+  `;
 };

@@ -18,10 +18,7 @@ type PropertyBaseOptions = Pick<
   "title" | "description" | "default"
 >;
 
-type ObjectBaseOptions = Pick<
-  JSONSchema,
-  "title" | "description" | "default"
->;
+type ObjectBaseOptions = Pick<JSONSchema, "title" | "description" | "default">;
 
 type ArrayOptions = PropertyBaseOptions;
 
@@ -64,24 +61,23 @@ export const boolean = (options: BooleanOptions = {}): PropertyValue => ({
 });
 
 export const any = (options: JSONSchema = {}): PropertyValue => ({
-  ...options
-})
+  ...options,
+});
 
 export const anonymousData = (options: JSONSchema): PropertyValue => ({
   additionalProperties: { type: "string" },
   ...options,
 });
 
-
-const stringFormat = (format: FormatName) => (
-  options: FormatOptions = {}
-): PropertyValue => {
-  return {
-    type: "string",
-    format,
-    ...(options ?? {}),
+const stringFormat =
+  (format: FormatName) =>
+  (options: FormatOptions = {}): PropertyValue => {
+    return {
+      type: "string",
+      format,
+      ...(options ?? {}),
+    };
   };
-};
 
 export const date = stringFormat("date");
 export const time = stringFormat("time");
@@ -133,7 +129,10 @@ export const ref = (refName: string): SchemaObject => ({
 const autoRef = (type: SchemaObjectOrRef): SchemaObject =>
   typeof type === "string" ? ref(type) : type;
 
-export const array = (itemType: SchemaObjectOrRef, options: ArrayOptions = {}): SchemaObject => ({
+export const array = (
+  itemType: SchemaObjectOrRef,
+  options: ArrayOptions = {},
+): SchemaObject => ({
   type: "array",
   items: autoRef(itemType),
   ...options,

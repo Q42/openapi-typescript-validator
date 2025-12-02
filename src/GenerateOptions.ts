@@ -1,4 +1,4 @@
-import { FormatsPluginOptions } from 'ajv-formats';
+import { FormatsPluginOptions } from "ajv-formats";
 import { Options } from "prettier";
 import { SchemaType } from "./parse-schema";
 
@@ -30,7 +30,7 @@ export interface GenerateOptions {
   /**
    * adds the "ajv-formats" packages
    * @default false
-  */
+   */
   addFormats?: boolean;
 
   /**

@@ -2,6 +2,7 @@ import path from "path";
 import fs from "fs";
 import { generate } from "openapi-typescript-validator";
 import Ajv from "ajv";
+import { describe, beforeAll, it, expect } from "vitest";
 
 describe("custom-schema - standalone ES6", () => {
   const name = "custom";
@@ -18,10 +19,11 @@ describe("custom-schema - standalone ES6", () => {
       standalone: {
         validatorOutput: "module",
       },
+      esm: true,
     });
   });
 
-  test("files should match", () => {
+  it("files should match", () => {
     const files = fs.readdirSync(generatedDir);
     expect(files).toEqual([
       "decoders",
@@ -33,10 +35,10 @@ describe("custom-schema - standalone ES6", () => {
     ]);
   });
 
-  test("schema should match", async () => {
+  it("schema should match", async () => {
     const file = fs.readFileSync(
       path.join(generatedDir, `schema.json`),
-      "utf8"
+      "utf8",
     );
     expect(file).not.toBeUndefined();
     expect(file).toMatchSnapshot();
@@ -47,7 +49,7 @@ describe("custom-schema - standalone ES6", () => {
   describe("decoders", () => {
     const decodersDir = path.join(generatedDir, `decoders`);
 
-    test("file structure", () => {
+    it("file structure", () => {
       const dir = fs.readdirSync(decodersDir);
       expect(dir).toEqual([
         "ImageComponent",
@@ -57,13 +59,13 @@ describe("custom-schema - standalone ES6", () => {
       ]);
     });
 
-    test("index.ts", () => {
+    it("index.ts", () => {
       const file = fs.readFileSync(path.join(decodersDir, `index.ts`), "utf8");
       expect(file).toMatchSnapshot();
     });
   });
 
-  test("models should match", () => {
+  it("models should match", () => {
     const file = fs.readFileSync(path.join(generatedDir, `models.ts`), "utf8");
     expect(file).not.toBeUndefined();
     expect(file).toMatchSnapshot();
@@ -89,50 +91,50 @@ describe("custom-schema - standalone ES6 merged", () => {
     });
   });
 
-  test("schema should match", async () => {
+  it("schema should match", async () => {
     const file = fs.readFileSync(
       path.join(generatedDir, `schema.json`),
-      "utf8"
+      "utf8",
     );
     expect(file).not.toBeUndefined();
     expect(file).toMatchSnapshot();
     expect(await new Ajv().validateSchema(JSON.parse(file))).toEqual(true);
   });
 
-  test("decoders", () => {
+  it("decoders", () => {
     const file = fs.readFileSync(
       path.join(generatedDir, `decoders.ts`),
-      "utf8"
+      "utf8",
     );
 
     expect(file).toMatchSnapshot();
   });
 
-  test("validators.d.ts", () => {
+  it("validators.d.ts", () => {
     const file = fs.readFileSync(
       path.join(generatedDir, `validators.d.ts`),
-      "utf8"
+      "utf8",
     );
 
     expect(file).toMatchSnapshot();
   });
 
-  test("validators.js", () => {
+  it("validators.js", () => {
     const file = fs.readFileSync(
       path.join(generatedDir, `validators.js`),
-      "utf8"
+      "utf8",
     );
 
     expect(file).not.toBeUndefined();
   });
 
-  test("helpers.ts", () => {
+  it("helpers.ts", () => {
     const file = fs.readFileSync(path.join(generatedDir, `helpers.ts`), "utf8");
 
     expect(file).toMatchSnapshot();
   });
 
-  test("models should match", () => {
+  it("models should match", () => {
     const file = fs.readFileSync(path.join(generatedDir, `models.ts`), "utf8");
     expect(file).not.toBeUndefined();
     expect(file).toMatchSnapshot();
@@ -144,7 +146,7 @@ describe("custom-schema - ajv compile", () => {
   const generatedDir = path.join(
     __dirname,
     "../generated",
-    `${name}-ajv-compile`
+    `${name}-ajv-compile`,
   );
   const schemaDir = path.join(__dirname, "../schemas");
 
@@ -158,7 +160,7 @@ describe("custom-schema - ajv compile", () => {
     });
   });
 
-  test("files should match", () => {
+  it("files should match", () => {
     const files = fs.readdirSync(generatedDir);
     expect(files).toEqual([
       "decoders.ts",
@@ -170,31 +172,31 @@ describe("custom-schema - ajv compile", () => {
     ]);
   });
 
-  test("schema should match", async () => {
+  it("schema should match", async () => {
     const file = fs.readFileSync(
       path.join(generatedDir, `schema.json`),
-      "utf8"
+      "utf8",
     );
     expect(file).not.toBeUndefined();
     expect(file).toMatchSnapshot();
     expect(await new Ajv().validateSchema(JSON.parse(file))).toEqual(true);
   });
 
-  test("decoders", () => {
+  it("decoders", () => {
     const file = fs.readFileSync(
       path.join(generatedDir, `decoders.ts`),
-      "utf8"
+      "utf8",
     );
 
     expect(file).toMatchSnapshot();
   });
 
-  test("helpers.ts", () => {
+  it("helpers.ts", () => {
     const file = fs.readFileSync(path.join(generatedDir, `helpers.ts`), "utf8");
     expect(file).toMatchSnapshot();
   });
 
-  test("models should match", () => {
+  it("models should match", () => {
     const file = fs.readFileSync(path.join(generatedDir, `models.ts`), "utf8");
     expect(file).not.toBeUndefined();
     expect(file).toMatchSnapshot();
@@ -219,7 +221,7 @@ describe("custom-schema - standalone commonjs", () => {
     });
   });
 
-  test("files", () => {
+  it("files", () => {
     const files = fs.readdirSync(generatedDir);
     expect(files).toEqual([
       "decoders",
@@ -234,7 +236,7 @@ describe("custom-schema - standalone commonjs", () => {
   describe("decoders", () => {
     const decodersDir = path.join(generatedDir, `decoders`);
 
-    test("file structure", () => {
+    it("file structure", () => {
       const dir = fs.readdirSync(decodersDir);
       expect(dir).toEqual([
         "ImageComponent",
@@ -244,7 +246,7 @@ describe("custom-schema - standalone commonjs", () => {
       ]);
     });
 
-    test("index.ts", () => {
+    it("index.ts", () => {
       const file = fs.readFileSync(path.join(decodersDir, `index.ts`), "utf8");
       expect(file).toMatchSnapshot();
     });
@@ -252,46 +254,46 @@ describe("custom-schema - standalone commonjs", () => {
     describe("ImageComponent", () => {
       const componentDir = path.join(decodersDir, `ImageComponent`);
 
-      test("file structure", () => {
+      it("file structure", () => {
         const dir = fs.readdirSync(componentDir);
         expect(dir).toEqual(["decoder.ts", "validator.js"]);
       });
 
-      test("decoder.ts", () => {
+      it("decoder.ts", () => {
         const file = fs.readFileSync(
           path.join(componentDir, `decoder.ts`),
-          "utf8"
+          "utf8",
         );
         expect(file).not.toBeUndefined();
         expect(file).toMatchSnapshot();
       });
 
-      test("validator.js", () => {
+      it("validator.js", () => {
         const file = fs.readFileSync(
           path.join(componentDir, `validator.js`),
-          "utf8"
+          "utf8",
         );
         expect(file).not.toBeUndefined();
       });
     });
   });
 
-  test("schema should match", async () => {
+  it("schema should match", async () => {
     const file = fs.readFileSync(
       path.join(generatedDir, `schema.json`),
-      "utf8"
+      "utf8",
     );
     expect(file).not.toBeUndefined();
     expect(file).toMatchSnapshot();
     expect(await new Ajv().validateSchema(JSON.parse(file))).toEqual(true);
   });
 
-  test("helpers.ts", () => {
+  it("helpers.ts", () => {
     const file = fs.readFileSync(path.join(generatedDir, `helpers.ts`), "utf8");
     expect(file).toMatchSnapshot();
   });
 
-  test("models should match", () => {
+  it("models should match", () => {
     const file = fs.readFileSync(path.join(generatedDir, `models.ts`), "utf8");
     expect(file).not.toBeUndefined();
     expect(file).toMatchSnapshot();
@@ -303,7 +305,7 @@ describe("custom-schema - standalone commonjs merged", () => {
   const generatedDir = path.join(
     __dirname,
     "../generated",
-    `${name}-commonjs-merged`
+    `${name}-commonjs-merged`,
   );
   const schemaDir = path.join(__dirname, "../schemas");
 
@@ -321,7 +323,7 @@ describe("custom-schema - standalone commonjs merged", () => {
     });
   });
 
-  test("files", () => {
+  it("files", () => {
     const files = fs.readdirSync(generatedDir);
     expect(files).toEqual([
       "decoders.ts",
@@ -334,31 +336,31 @@ describe("custom-schema - standalone commonjs merged", () => {
     ]);
   });
 
-  test("schema should match", async () => {
+  it("schema should match", async () => {
     const file = fs.readFileSync(
       path.join(generatedDir, `schema.json`),
-      "utf8"
+      "utf8",
     );
     expect(file).not.toBeUndefined();
     expect(file).toMatchSnapshot();
     expect(await new Ajv().validateSchema(JSON.parse(file))).toEqual(true);
   });
 
-  test("helpers.ts", () => {
+  it("helpers.ts", () => {
     const file = fs.readFileSync(path.join(generatedDir, `helpers.ts`), "utf8");
     expect(file).toMatchSnapshot();
   });
 
-  test("models should match", () => {
+  it("models should match", () => {
     const file = fs.readFileSync(path.join(generatedDir, `models.ts`), "utf8");
     expect(file).not.toBeUndefined();
     expect(file).toMatchSnapshot();
   });
 
-  test("decoders", () => {
+  it("decoders", () => {
     const file = fs.readFileSync(
       path.join(generatedDir, `decoders.ts`),
-      "utf8"
+      "utf8",
     );
 
     expect(file).toMatchSnapshot();
@@ -384,7 +386,7 @@ describe("custom-schema - no decoders", () => {
     });
   });
 
-  test("files", () => {
+  it("files", () => {
     const files = fs.readdirSync(generatedDir);
     expect(files).toEqual([
       "helpers.ts",
@@ -394,22 +396,22 @@ describe("custom-schema - no decoders", () => {
     ]);
   });
 
-  test("schema should match", async () => {
+  it("schema should match", async () => {
     const file = fs.readFileSync(
       path.join(generatedDir, `schema.json`),
-      "utf8"
+      "utf8",
     );
     expect(file).not.toBeUndefined();
     expect(file).toMatchSnapshot();
     expect(await new Ajv().validateSchema(JSON.parse(file))).toEqual(true);
   });
 
-  test("helpers.ts", () => {
+  it("helpers.ts", () => {
     const file = fs.readFileSync(path.join(generatedDir, `helpers.ts`), "utf8");
     expect(file).toMatchSnapshot();
   });
 
-  test("models should match", () => {
+  it("models should match", () => {
     const file = fs.readFileSync(path.join(generatedDir, `models.ts`), "utf8");
     expect(file).not.toBeUndefined();
     expect(file).toMatchSnapshot();

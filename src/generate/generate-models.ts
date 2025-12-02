@@ -1,26 +1,26 @@
 import { mkdirSync, writeFileSync } from "fs";
-import path from 'path';
-import { compile } from 'json-schema-to-typescript';
-import { format, Options } from 'prettier';
-import { ParsedSchema } from '../parse-schema';
-import { GenerateOptions } from '../GenerateOptions';
+import path from "path";
+import { compile } from "json-schema-to-typescript";
+import { format, Options } from "prettier";
+import { ParsedSchema } from "../parse-schema";
+import { GenerateOptions } from "../GenerateOptions";
 
 export async function generateModels(
   schema: ParsedSchema,
-  options: Pick<GenerateOptions, 'skipSchemaFile'>,
+  options: Pick<GenerateOptions, "skipSchemaFile">,
   prettierOptions: Options,
-  outDirs: string[]
+  outDirs: string[],
 ): Promise<void> {
   const compiledTypescriptModels = await compile(
     JSON.parse(schema.json),
-    "Schema"
+    "Schema",
   );
   const rawTypescriptModels = modelsFileTemplate
     .replace(/\$Models/g, compiledTypescriptModels)
     .replace(/\s*\[k: string\]: unknown;/g, "") // Allow additional properties in schema but not in typescript
     .replace(/export interface Schema \{[^]*?\n\}/, "");
 
-  const typescriptModels = format(rawTypescriptModels, prettierOptions);
+  const typescriptModels = await format(rawTypescriptModels, prettierOptions);
 
   outDirs.forEach((outDir) => {
     mkdirSync(outDir, { recursive: true });
