@@ -42,8 +42,7 @@
     "ajv-formats": "^3.0.1",
     "js-yaml": "^4.1.0",
     "json-schema-to-typescript": "^15.0.4",
-    "lodash.keyby": "^4.6.0",
-    "openapi-typescript-validator": "^4.0.0"
+    "lodash.keyby": "^4.6.0"
   },
   "devDependencies": {
     "@types/js-yaml": "^4.0.9",
