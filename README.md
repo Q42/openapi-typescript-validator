@@ -1,3 +1,5 @@
+# NOTE: This repository contains very outdated code and should not be used anymore.
+
 # openapi-typescript-validator
 Generate typescript with `ajv >= 8.0.0` validation based on openapi schemas
 
